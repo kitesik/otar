@@ -59,11 +59,11 @@ const siteUrl =
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://otar.site");
 
 export const siteConfig = {
-  name: "ㅊ미",
+  name: "otar.site",
   domain: new URL(siteUrl).hostname,
   url: siteUrl,
   description:
-    "cal을 ㅊ미로, youtube를 yoi로 친 사람을 위한 작은 오타 쉼터. 귀여운 사진 하나 보고 원래 목적지로 바로 돌아가세요.",
+    "주소창에 ㅊ미, yoi, chatgtp처럼 잘못 입력한 사람을 위한 작은 오타 쉼터. 귀여운 사진 하나 보고 원래 목적지로 바로 돌아가세요.",
 };
 
 const dubeolsikMap: Record<string, string> = {

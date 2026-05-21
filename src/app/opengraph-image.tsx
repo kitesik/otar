@@ -36,11 +36,11 @@ export default function Image() {
             {siteConfig.domain}
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 18, marginTop: 56 }}>
-            <div style={{ fontSize: 132, fontWeight: 900, lineHeight: 0.88, color: "#059669" }}>
-              ㅊ미
+            <div style={{ fontSize: 104, fontWeight: 900, lineHeight: 0.95, color: "#059669" }}>
+              오타여도
             </div>
             <div style={{ fontSize: 62, fontWeight: 900, lineHeight: 1.05 }}>
-              또 눌렀죠?
+              괜찮아요
             </div>
             <div style={{ fontSize: 40, fontWeight: 800, color: "#52525b" }}>
               힐링 하고 가요.
