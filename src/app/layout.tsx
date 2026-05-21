@@ -5,7 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "ㅊ미 - 오타가 데려온 작은 샛길",
+    default: "ㅊ미 또 눌렀죠? 힐링 하고 가요.",
     template: "%s | ㅊ미",
   },
   description: siteConfig.description,
@@ -17,16 +17,34 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ko_KR",
     siteName: siteConfig.name,
-    title: "ㅊ미 - 오타가 데려온 작은 샛길",
+    title: "ㅊ미 또 눌렀죠? 힐링 하고 가요.",
     description: siteConfig.description,
     url: siteConfig.url,
-    images: ["/opengraph-image"],
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "ㅊ미 오타 랜딩 페이지 미리보기",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ㅊ미 - 오타가 데려온 작은 샛길",
+    title: "ㅊ미 또 눌렀죠? 힐링 하고 가요.",
     description: siteConfig.description,
     images: ["/opengraph-image"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
   keywords: [
     "ㅊ미",

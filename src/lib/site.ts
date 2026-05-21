@@ -63,7 +63,7 @@ export const siteConfig = {
   domain: new URL(siteUrl).hostname,
   url: siteUrl,
   description:
-    "cal을 ㅊ미로, youtube를 yoi로 친 사람을 위한 작은 오타 쉼터. 오늘의 기분 좋아지는 사진과 바로가기를 보여줍니다.",
+    "cal을 ㅊ미로, youtube를 yoi로 친 사람을 위한 작은 오타 쉼터. 귀여운 사진 하나 보고 원래 목적지로 바로 돌아가세요.",
 };
 
 const dubeolsikMap: Record<string, string> = {

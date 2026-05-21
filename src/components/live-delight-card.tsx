@@ -91,7 +91,7 @@ export function LiveDelightCard({ fallback }: { fallback: DelightItem }) {
         />
       </div>
       <figcaption className="font-soft space-y-4 px-4 py-4 text-left">
-        <p className="text-lg font-black">귀여운사진.jpg</p>
+        <p className="text-lg font-black">복이 올거에요</p>
       </figcaption>
     </figure>
   );

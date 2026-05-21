@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { ExternalLink } from "lucide-react";
 import { JsonLd } from "@/components/json-ld";
 import { LiveDelightCard } from "@/components/live-delight-card";
@@ -8,6 +9,46 @@ import {
   getTodayDelight,
   siteConfig,
 } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: "ㅊ미 또 눌렀죠? 힐링 하고 가요.",
+  description:
+    "cal을 치려다 ㅊ미를 입력한 사람을 위한 작은 오타 쉼터. 귀여운 사진 하나 보고, Google Calendar는 버튼으로 바로 열어보세요.",
+  alternates: {
+    canonical: "/",
+  },
+  keywords: [
+    "ㅊ미",
+    "ㅊ미 오타",
+    "cal 한영",
+    "cal 잘못침",
+    "구글 캘린더 오타",
+    "Google Calendar 오타",
+  ],
+  openGraph: {
+    title: "ㅊ미 또 눌렀죠? 힐링 하고 가요.",
+    description:
+      "cal을 치려다 ㅊ미를 입력했다면, 귀여운 사진 하나 보고 원래 목적지로 돌아가세요.",
+    url: siteConfig.url,
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "ㅊ미 오타 랜딩 페이지 미리보기",
+      },
+    ],
+    locale: "ko_KR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ㅊ미 또 눌렀죠? 힐링 하고 가요.",
+    description:
+      "cal을 치려다 ㅊ미를 입력했다면, 귀여운 사진 하나 보고 원래 목적지로 돌아가세요.",
+    images: ["/opengraph-image"],
+  },
+};
 
 export default function Home() {
   const intent = getIntentBySlug("chmi");

@@ -31,9 +31,9 @@ export async function generateMetadata({
   }
 
   const typoLabel = intent.typoExamples[0] ?? intent.slug;
-  const title = `${typoLabel}를 치셨나요?`;
-  const description = `${intent.intendedService} 주소창 오타로 들어온 사람을 위한 오늘의 기분 좋아지는 사진과 바로가기 페이지입니다. 검색어: ${intent.queries
-    .slice(0, 8)
+  const title = `${typoLabel} 또 눌렀죠? 힐링 하고 가요.`;
+  const description = `${typoLabel}는 ${intent.intendedService}로 가려다 생길 수 있는 주소창 오타예요. 귀여운 사진 하나 보고, 원래 목적지는 바로 열어보세요. 검색어: ${intent.queries
+    .slice(0, 6)
     .join(", ")}`;
 
   return {
@@ -45,13 +45,32 @@ export async function generateMetadata({
     robots: {
       index: intent.indexingMode === "index",
       follow: true,
+      googleBot: {
+        index: intent.indexingMode === "index",
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
     },
-    keywords: intent.keywordCluster,
+    keywords: [
+      typoLabel,
+      `${typoLabel} 오타`,
+      `${intent.intendedService} 오타`,
+      ...intent.keywordCluster,
+    ],
     openGraph: {
       title,
       description,
       url: absoluteUrl(intent.canonicalPath),
-      images: ["/opengraph-image"],
+      images: [
+        {
+          url: "/opengraph-image",
+          width: 1200,
+          height: 630,
+          alt: `${typoLabel} 오타 힐링 사진 미리보기`,
+        },
+      ],
       locale: "ko_KR",
       type: "website",
     },
