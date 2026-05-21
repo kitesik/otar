@@ -46,6 +46,7 @@ const urls = Array.from(sitemap.matchAll(/<loc>(.*?)<\/loc>/g)).map(
 assert(urls.includes(`${publicOrigin}/`), "home is missing from sitemap");
 assert(urls.includes(`${publicOrigin}/dictionary`), "dictionary is missing from sitemap");
 assert(urls.includes(`${publicOrigin}/oops/chmi`), "chmi page is missing from sitemap");
+assert(urls.includes(`${publicOrigin}/oops/ccal`), "ccal variant page is missing from sitemap");
 assert(urls.includes(`${publicOrigin}/oops/youtube-typo`), "youtube page is missing from sitemap");
 assert(urls.includes(`${publicOrigin}/oops/chatgpt`), "chatgpt page is missing from sitemap");
 assert(urls.length >= 45, `expected at least 45 sitemap URLs, got ${urls.length}`);
@@ -79,6 +80,10 @@ assert(
   chmi.includes("/oops/gmail") || chmi.includes("/oops/google-drive"),
   "chmi page missing related internal typo links",
 );
+
+const ccal = await text("/oops/ccal");
+assert(ccal.includes("ccal"), "ccal page missing ccal label");
+assert(ccal.includes(`href="${publicOrigin}/oops/ccal"`), "ccal canonical mismatch");
 
 const chatgpt = await text("/oops/chatgpt");
 assert(chatgpt.toLowerCase().includes("chatgtp"), "chatgpt page missing chatgtp");

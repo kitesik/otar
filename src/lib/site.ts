@@ -41,6 +41,14 @@ export type DelightItem = {
   tags: string[];
 };
 
+export type LandingVariant = {
+  slug: string;
+  label: string;
+  intent: TypoIntent;
+  canonicalPath: string;
+  isPrimary: boolean;
+};
+
 type ServiceSeed = {
   slug: string;
   name: string;
@@ -1951,6 +1959,62 @@ export function getIntentBySlug(slug: string) {
 
 export function getIndexedIntents() {
   return typoIntents.filter((intent) => intent.indexingMode === "index");
+}
+
+const landingVariantsPerIntent = 10;
+
+function toLandingSlug(label: string) {
+  return label
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9가-힣ㄱ-ㅎㅏ-ㅣ]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+export function getLandingVariants(): LandingVariant[] {
+  const variants: LandingVariant[] = [];
+  const usedSlugs = new Set(typoIntents.map((intent) => intent.slug));
+
+  for (const intent of getIndexedIntents()) {
+    const labels = dedupe([
+      intent.typoExamples[0] ?? intent.slug,
+      ...intent.typoExamples.slice(1, landingVariantsPerIntent),
+    ]);
+
+    variants.push({
+      slug: intent.slug,
+      label: labels[0] ?? intent.slug,
+      intent,
+      canonicalPath: intent.canonicalPath,
+      isPrimary: true,
+    });
+
+    for (const label of labels.slice(1)) {
+      const slug = toLandingSlug(label);
+
+      if (!slug || usedSlugs.has(slug)) {
+        continue;
+      }
+
+      usedSlugs.add(slug);
+      variants.push({
+        slug,
+        label,
+        intent,
+        canonicalPath: `/oops/${slug}`,
+        isPrimary: false,
+      });
+    }
+  }
+
+  return variants;
+}
+
+export function getLandingVariantBySlug(slug: string) {
+  const decodedSlug = decodeURIComponent(slug);
+
+  return getLandingVariants().find((variant) => variant.slug === decodedSlug);
 }
 
 export function getIntentsByCategory(category: ServiceCategory) {

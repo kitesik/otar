@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { absoluteUrl, getIndexedIntents } from "@/lib/site";
+import { absoluteUrl, getLandingVariants } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
@@ -23,11 +23,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.7,
     },
-    ...getIndexedIntents().map((intent) => ({
-      url: absoluteUrl(`/oops/${intent.slug}`),
+    ...getLandingVariants().map((variant) => ({
+      url: absoluteUrl(variant.canonicalPath),
       lastModified: now,
       changeFrequency: "weekly" as const,
-      priority: intent.slug === "chmi" ? 0.95 : 0.75,
+      priority: variant.isPrimary ? (variant.slug === "chmi" ? 0.95 : 0.75) : 0.6,
     })),
   ];
 }

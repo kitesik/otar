@@ -15,8 +15,9 @@ export function TypoSeoContext({
   queryLimit = 14,
 }: TypoSeoContextProps) {
   const sectionId = `typo-context-${intent.slug}`;
-  const visibleQueries = intent.queries.slice(0, queryLimit);
-  const remainingQueries = intent.queries.slice(queryLimit);
+  const relatedQueries = intent.queries.filter((query) => query !== typoLabel);
+  const visibleQueries = relatedQueries.slice(0, queryLimit);
+  const remainingQueries = relatedQueries.slice(queryLimit);
   const related = relatedIntents
     .filter((relatedIntent) => relatedIntent.slug !== intent.slug)
     .slice(0, 5);
@@ -41,10 +42,19 @@ export function TypoSeoContext({
       </div>
 
       <div className="space-y-2">
+        <h3 className="font-bold text-zinc-700">현재 페이지의 오타/검색어</h3>
+        <ul className="flex flex-wrap gap-2" aria-label={`${typoLabel} 현재 검색어`}>
+          <li className="wrap-anywhere rounded-[6px] border border-emerald-200 bg-emerald-50 px-2 py-1 font-black text-emerald-700 [word-break:break-all]">
+            {typoLabel}
+          </li>
+        </ul>
+      </div>
+
+      <div className="space-y-2">
         <h3 className="font-bold text-zinc-700">
-          이 페이지로 랜딩되는 오타/검색어
+          같은 목적지로 이어지는 관련 입력
         </h3>
-        <ul className="flex flex-wrap gap-2" aria-label={`${typoLabel} 관련 검색어`}>
+        <ul className="flex flex-wrap gap-2" aria-label={`${typoLabel} 관련 입력`}>
           {visibleQueries.map((query) => (
             <li
               key={query}

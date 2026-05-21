@@ -7,11 +7,11 @@ import { TypoSeoContext } from "@/components/typo-seo-context";
 import { VisitCounter } from "@/components/visit-counter";
 import {
   absoluteUrl,
-  getIntentBySlug,
   getIntentsByCategory,
+  getLandingVariantBySlug,
+  getLandingVariants,
   getTodayDelight,
   siteConfig,
-  typoIntents,
 } from "@/lib/site";
 
 type PageProps = {
@@ -19,30 +19,32 @@ type PageProps = {
 };
 
 export function generateStaticParams() {
-  return typoIntents.map((intent) => ({ slug: intent.slug }));
+  return getLandingVariants().map((variant) => ({ slug: variant.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const intent = getIntentBySlug(slug);
+  const variant = getLandingVariantBySlug(slug);
 
-  if (!intent) {
+  if (!variant) {
     return {};
   }
 
-  const typoLabel = intent.typoExamples[0] ?? intent.slug;
+  const { intent } = variant;
+  const typoLabel = variant.label;
   const title = `${typoLabel} 또 눌렀죠? 힐링 하고 가요.`;
   const description = `${typoLabel}는 ${intent.intendedService}로 가려다 생길 수 있는 주소창 오타예요. 귀여운 사진 하나 보고, 원래 목적지는 바로 열어보세요. 검색어: ${intent.queries
-    .slice(0, 6)
+    .filter((query) => query !== typoLabel)
+    .slice(0, 5)
     .join(", ")}`;
 
   return {
     title,
     description,
     alternates: {
-      canonical: intent.canonicalPath,
+      canonical: variant.canonicalPath,
     },
     robots: {
       index: intent.indexingMode === "index",
@@ -62,7 +64,7 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      url: absoluteUrl(intent.canonicalPath),
+      url: absoluteUrl(variant.canonicalPath),
       images: [
         {
           url: "/opengraph-image",
@@ -85,14 +87,15 @@ export async function generateMetadata({
 
 export default async function OopsPage({ params }: PageProps) {
   const { slug } = await params;
-  const intent = getIntentBySlug(slug);
+  const variant = getLandingVariantBySlug(slug);
 
-  if (!intent) {
+  if (!variant) {
     notFound();
   }
 
+  const { intent } = variant;
   const today = getTodayDelight();
-  const typoLabel = intent.typoExamples[0] ?? intent.slug;
+  const typoLabel = variant.label;
   const relatedIntents = getIntentsByCategory(intent.category);
 
   return (
@@ -102,7 +105,7 @@ export default async function OopsPage({ params }: PageProps) {
           "@context": "https://schema.org",
           "@type": "WebPage",
           name: `${typoLabel}는 ${intent.intendedService} 오타예요`,
-          url: absoluteUrl(`/oops/${intent.slug}`),
+          url: absoluteUrl(variant.canonicalPath),
           inLanguage: intent.locale,
           description: `${typoLabel}와 ${intent.intendedService} 관련 주소창 오타를 설명하고, 원래 목적지로 이동할 수 있게 돕는 페이지입니다.`,
           about: {
@@ -155,7 +158,7 @@ export default async function OopsPage({ params }: PageProps) {
               "@type": "ListItem",
               position: 3,
               name: `${typoLabel} 오타`,
-              item: absoluteUrl(intent.canonicalPath),
+              item: absoluteUrl(variant.canonicalPath),
             },
           ],
         }}
@@ -182,7 +185,7 @@ export default async function OopsPage({ params }: PageProps) {
           <ExternalLink aria-hidden="true" size={18} />
         </a>
 
-        <VisitCounter slug={intent.slug} />
+        <VisitCounter slug={variant.slug} />
 
         <TypoSeoContext
           intent={intent}
