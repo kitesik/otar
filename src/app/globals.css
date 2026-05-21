@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fffdf7;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: Arial, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, monospace;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  overflow-x: hidden;
+}
+
+button,
+a {
+  text-underline-offset: 4px;
+}
+
+.nav-link {
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 8px;
+  padding: 0.6rem;
+  color: #3f3f46;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+@media (min-width: 40rem) {
+  .nav-link {
+    padding: 0.6rem 0.75rem;
+  }
+}
+
+.nav-link:hover {
+  background: #f1f5f9;
+  color: #09090b;
+}
+
+.text-zinc-650 {
+  color: #4b4b55;
+}
+
+.wrap-anywhere {
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
