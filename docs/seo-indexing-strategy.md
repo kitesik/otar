@@ -44,8 +44,8 @@
 
 ## Search Console Checklist
 
-1. `https://chmi.kr` 또는 실제 배포 도메인을 Search Console에 등록합니다.
-2. `https://chmi.kr/sitemap.xml`을 제출합니다.
+1. `https://otar.site`를 Search Console에 등록합니다.
+2. `https://otar.site/sitemap.xml`을 제출합니다.
 3. URL 검사로 아래 페이지를 먼저 요청합니다.
    - `/`
    - `/dictionary`

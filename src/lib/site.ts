@@ -56,7 +56,7 @@ type ServiceSeed = {
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://chmi.kr");
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://otar.site");
 
 export const siteConfig = {
   name: "ㅊ미",

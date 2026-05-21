@@ -1,5 +1,5 @@
 const baseUrl = process.env.SEO_BASE_URL ?? "http://127.0.0.1:3000";
-const publicOrigin = process.env.SEO_PUBLIC_ORIGIN ?? "https://chmi.kr";
+const publicOrigin = process.env.SEO_PUBLIC_ORIGIN ?? "https://otar.site";
 
 const requiredDictionaryTerms = [
   "ㅊ미",
