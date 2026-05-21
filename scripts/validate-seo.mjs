@@ -65,6 +65,20 @@ const chmi = await text("/oops/chmi");
 assert(chmi.includes("ㅊ미"), "chmi page missing ㅊ미");
 assert(chmi.includes("cal 한영"), "chmi page missing cal 한영");
 assert(chmi.includes(`href="${publicOrigin}/oops/chmi"`), "chmi canonical mismatch");
+assert(
+  chmi.includes("ㅊ미는 Google Calendar 오타예요"),
+  "chmi page missing natural typo heading",
+);
+assert(chmi.includes("ViewAction"), "chmi page missing destination action structured data");
+assert(chmi.includes("DefinedTerm"), "chmi page missing typo term structured data");
+assert(
+  chmi.includes("max-image-preview:large"),
+  "chmi page missing large image preview robots hint",
+);
+assert(
+  chmi.includes("/oops/gmail") || chmi.includes("/oops/google-drive"),
+  "chmi page missing related internal typo links",
+);
 
 const chatgpt = await text("/oops/chatgpt");
 assert(chatgpt.toLowerCase().includes("chatgtp"), "chatgpt page missing chatgtp");

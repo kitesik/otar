@@ -3,10 +3,12 @@ import { notFound } from "next/navigation";
 import { ExternalLink } from "lucide-react";
 import { JsonLd } from "@/components/json-ld";
 import { LiveDelightCard } from "@/components/live-delight-card";
+import { TypoSeoContext } from "@/components/typo-seo-context";
 import { VisitCounter } from "@/components/visit-counter";
 import {
   absoluteUrl,
   getIntentBySlug,
+  getIntentsByCategory,
   getTodayDelight,
   siteConfig,
   typoIntents,
@@ -93,6 +95,7 @@ export default async function OopsPage({ params }: PageProps) {
 
   const today = getTodayDelight();
   const typoLabel = intent.typoExamples[0] ?? intent.slug;
+  const relatedIntents = getIntentsByCategory(intent.category);
 
   return (
     <main className="min-h-screen bg-white px-5 py-10 text-zinc-950 sm:py-14">
@@ -100,10 +103,32 @@ export default async function OopsPage({ params }: PageProps) {
         data={{
           "@context": "https://schema.org",
           "@type": "WebPage",
-          name: `${intent.intendedService} 오타 랜딩`,
+          name: `${typoLabel}는 ${intent.intendedService} 오타예요`,
           url: absoluteUrl(`/oops/${intent.slug}`),
           inLanguage: intent.locale,
-          description: intent.explanation,
+          description: `${typoLabel}와 ${intent.intendedService} 관련 주소창 오타를 설명하고, 원래 목적지로 이동할 수 있게 돕는 페이지입니다.`,
+          about: {
+            "@type": "Thing",
+            name: intent.intendedService,
+            alternateName: intent.queries.slice(0, 12),
+            sameAs: intent.destinationUrl,
+          },
+          mentions: intent.queries.slice(0, 12).map((query) => ({
+            "@type": "DefinedTerm",
+            name: query,
+            inDefinedTermSet: absoluteUrl("/dictionary"),
+          })),
+          primaryImageOfPage: {
+            "@type": "ImageObject",
+            url: absoluteUrl("/opengraph-image"),
+            width: 1200,
+            height: 630,
+          },
+          potentialAction: {
+            "@type": "ViewAction",
+            name: `${intent.intendedService} 바로 열기`,
+            target: intent.destinationUrl,
+          },
           isPartOf: {
             "@type": "WebSite",
             name: siteConfig.name,
@@ -135,18 +160,12 @@ export default async function OopsPage({ params }: PageProps) {
 
         <VisitCounter slug={intent.slug} />
 
-        <section className="font-soft mt-7 max-w-2xl space-y-2 text-xs leading-6 text-zinc-500">
-          <h2 className="font-bold text-zinc-700">
-            이 페이지로 랜딩되는 오타/검색어
-          </h2>
-          <p className="text-zinc-600">
-            {typoLabel}는 {intent.intendedService}로 가려다 생길 수 있는
-            주소창 오타예요. 원래 목적지는 아래 버튼으로 바로 열 수 있습니다.
-          </p>
-          <p className="wrap-anywhere [word-break:break-all]">
-            {intent.queries.slice(0, 32).join(" · ")}
-          </p>
-        </section>
+        <TypoSeoContext
+          intent={intent}
+          typoLabel={typoLabel}
+          relatedIntents={relatedIntents}
+          queryLimit={16}
+        />
       </section>
     </main>
   );
