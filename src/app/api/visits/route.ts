@@ -24,7 +24,7 @@ function getRedisConfig(): RedisConfig | null {
 }
 
 function getBaseTotal() {
-  return Number(process.env.VISIT_COUNTER_BASE_TOTAL ?? 0);
+  return Number(process.env.VISIT_COUNTER_BASE_TOTAL ?? 5);
 }
 
 function getSeoulDate() {
