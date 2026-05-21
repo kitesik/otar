@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { siteConfig } from "@/lib/site";
 
 export const size = {
   width: 1200,
@@ -29,7 +30,7 @@ export default function Image() {
             width: "100%",
           }}
         >
-          <div style={{ fontSize: 44, fontWeight: 900 }}>chmi.kr</div>
+          <div style={{ fontSize: 44, fontWeight: 900 }}>{siteConfig.domain}</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             <div style={{ fontSize: 156, fontWeight: 900, lineHeight: 0.9 }}>
               ㅊ미

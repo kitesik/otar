@@ -64,7 +64,7 @@ for (const term of requiredDictionaryTerms) {
 const chmi = await text("/oops/chmi");
 assert(chmi.includes("ㅊ미"), "chmi page missing ㅊ미");
 assert(chmi.includes("cal 한영"), "chmi page missing cal 한영");
-assert(chmi.includes('href="https://chmi.kr/oops/chmi"'), "chmi canonical mismatch");
+assert(chmi.includes(`href="${publicOrigin}/oops/chmi"`), "chmi canonical mismatch");
 
 const chatgpt = await text("/oops/chatgpt");
 assert(chatgpt.toLowerCase().includes("chatgtp"), "chatgpt page missing chatgtp");

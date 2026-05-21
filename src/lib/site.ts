@@ -54,10 +54,14 @@ type ServiceSeed = {
   wink?: string;
 };
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://chmi.kr");
+
 export const siteConfig = {
   name: "ㅊ미",
-  domain: "chmi.kr",
-  url: "https://chmi.kr",
+  domain: new URL(siteUrl).hostname,
+  url: siteUrl,
   description:
     "cal을 ㅊ미로, youtube를 yoi로 친 사람을 위한 작은 오타 쉼터. 오늘의 기분 좋아지는 사진과 바로가기를 보여줍니다.",
 };
