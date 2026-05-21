@@ -5,7 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "ㅊ미 - 오타가 데려온 오늘의 밈",
+    default: "ㅊ미 - 오타가 데려온 작은 샛길",
     template: "%s | ㅊ미",
   },
   description: siteConfig.description,
@@ -17,14 +17,14 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ko_KR",
     siteName: siteConfig.name,
-    title: "ㅊ미 - 오타가 데려온 오늘의 밈",
+    title: "ㅊ미 - 오타가 데려온 작은 샛길",
     description: siteConfig.description,
     url: siteConfig.url,
     images: ["/opengraph-image"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ㅊ미 - 오타가 데려온 오늘의 밈",
+    title: "ㅊ미 - 오타가 데려온 작은 샛길",
     description: siteConfig.description,
     images: ["/opengraph-image"],
   },

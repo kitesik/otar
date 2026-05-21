@@ -33,10 +33,11 @@ export default function Home() {
         }}
       />
       <section className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
-        <h1 className="min-w-0 max-w-full text-[clamp(1.65rem,6.4vw,3.75rem)] font-black leading-tight tracking-normal">
-          <span className="block break-words">{intent.intendedService}로 가고</span>
-          <span className="block">싶으셨나요?</span>
-          <span className="block whitespace-nowrap">오늘의 밈 보고 가세요</span>
+        <h1 className="min-w-0 max-w-full text-[clamp(1.55rem,6vw,3.5rem)] font-black leading-tight tracking-normal">
+          <span className="wrap-anywhere block">{intent.intendedService}</span>
+          <span className="block">가는 길에 잠깐 샛길.</span>
+          <span className="block">오늘 기분 좋아지는 사진</span>
+          <span className="block">하나 보고 가세요.</span>
         </h1>
 
         <LiveDelightCard fallback={today} />
@@ -47,7 +48,7 @@ export default function Home() {
           rel="noreferrer"
           className="mt-7 inline-flex min-h-12 w-full max-w-sm items-center justify-center gap-2 rounded-[8px] bg-zinc-950 px-5 py-3 text-base font-black text-white transition hover:bg-zinc-800"
         >
-          {intent.intendedService}로 가기
+          {intent.intendedService} 바로 열기
           <ExternalLink aria-hidden="true" size={18} />
         </a>
 

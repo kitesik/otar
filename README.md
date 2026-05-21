@@ -54,6 +54,6 @@ npm.cmd run build
 
 - `serviceSeeds`: 서비스/alias/대표 오타 후보
 - `typoIntents`: index 가능한 대표 오타 의도 페이지
-- `delightItems`: 오늘의 밈/펭귄/기분 전환 콘텐츠
+- `delightItems`: 오늘의 귀여운 사진/자연 사진/기분 전환 콘텐츠
 
 콘텐츠는 저작권 안전한 이미지와 출처/라이선스를 포함해야 합니다.

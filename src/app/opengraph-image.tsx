@@ -39,7 +39,7 @@ export default function Image() {
             </div>
           </div>
           <div style={{ fontSize: 34, color: "#047857", fontWeight: 800 }}>
-            오늘의 밈, 펭귄, 그리고 목적지 바로가기
+            오늘의 사진, 작은 휴식, 그리고 목적지 바로가기
           </div>
         </div>
       </div>

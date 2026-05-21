@@ -6,7 +6,7 @@ import type { DelightItem } from "@/lib/site";
 
 type LiveDelight = {
   id: string;
-  source: "Reddit" | "GIPHY" | "Fallback";
+  source: "귀여운 사진" | "자연 사진" | "큐레이션";
   title: string;
   caption: string;
   image: string;
@@ -15,39 +15,14 @@ type LiveDelight = {
   sourceLicense: string;
 };
 
-type RedditResponse = {
+type DelightResponse = {
   candidates?: LiveDelight[];
-};
-
-type GiphyGif = {
-  id: string;
-  title?: string;
-  url?: string;
-  images?: {
-    downsized_medium?: {
-      url?: string;
-    };
-    fixed_height?: {
-      url?: string;
-    };
-    original?: {
-      url?: string;
-    };
-  };
-  user?: {
-    display_name?: string;
-    username?: string;
-  };
-};
-
-type GiphyResponse = {
-  data?: GiphyGif[];
 };
 
 function fallbackToLive(item: DelightItem): LiveDelight {
   return {
     id: `fallback-${item.date}`,
-    source: "Fallback",
+    source: "큐레이션",
     title: item.title,
     caption: item.caption,
     image: item.image,
@@ -72,7 +47,7 @@ export function LiveDelightCard({ fallback }: { fallback: DelightItem }) {
   const fallbackItem = useMemo(() => fallbackToLive(fallback), [fallback]);
   const [items, setItems] = useState<LiveDelight[]>([fallbackItem]);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [status, setStatus] = useState("라이브 후보를 불러오는 중");
+  const [status, setStatus] = useState("오늘의 사진 후보를 불러오는 중");
 
   useEffect(() => {
     let cancelled = false;
@@ -81,41 +56,11 @@ export function LiveDelightCard({ fallback }: { fallback: DelightItem }) {
       const nextItems: LiveDelight[] = [];
 
       try {
-        const response = await fetch("/api/reddit-delight");
-        const payload = (await response.json()) as RedditResponse;
+        const response = await fetch("/api/delight");
+        const payload = (await response.json()) as DelightResponse;
         nextItems.push(...(payload.candidates ?? []));
       } catch {
-        // Keep the fallback item when Reddit is temporarily unavailable.
-      }
-
-      const giphyKey = process.env.NEXT_PUBLIC_GIPHY_API_KEY;
-
-      if (giphyKey) {
-        try {
-          const response = await fetch(
-            `https://api.giphy.com/v1/gifs/trending?api_key=${giphyKey}&limit=12&rating=g&bundle=messaging_non_clips`,
-          );
-          const payload = (await response.json()) as GiphyResponse;
-          const gifs =
-            payload.data?.map((gif) => ({
-              id: `giphy-${gif.id}`,
-              source: "GIPHY" as const,
-              title: gif.title || "오늘의 트렌딩 GIF",
-              caption: `${gif.user?.display_name || gif.user?.username || "GIPHY"} 트렌딩 GIF`,
-              image:
-                gif.images?.downsized_medium?.url ||
-                gif.images?.fixed_height?.url ||
-                gif.images?.original?.url ||
-                "",
-              imageAlt: gif.title || "GIPHY 트렌딩 GIF",
-              sourceUrl: gif.url || "https://giphy.com/",
-              sourceLicense: "GIPHY API trending result",
-            })) ?? [];
-
-          nextItems.push(...gifs.filter((gif) => gif.image));
-        } catch {
-          // GIPHY is optional for local preview.
-        }
+        // Keep the fallback item when live photo sources are temporarily unavailable.
       }
 
       if (cancelled) {
@@ -133,8 +78,8 @@ export function LiveDelightCard({ fallback }: { fallback: DelightItem }) {
       setActiveIndex(Math.max(0, dailyIndex));
       setStatus(
         nextItems.length > 0
-          ? `${nextItems.length}개 라이브 후보 중 오늘의 1개`
-          : "API 키 없이 기본 귀여운 사진 표시 중",
+          ? `${nextItems.length}개 사진 후보 중 오늘의 하나`
+          : "기본 큐레이션 사진 표시 중",
       );
     }
 
@@ -154,7 +99,7 @@ export function LiveDelightCard({ fallback }: { fallback: DelightItem }) {
         <img
           src={active.image}
           alt={active.imageAlt}
-          className="h-full w-full object-contain"
+          className="h-full w-full object-cover"
         />
         <div className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-black text-zinc-800 shadow-sm">
           {active.source}
@@ -182,7 +127,7 @@ export function LiveDelightCard({ fallback }: { fallback: DelightItem }) {
             className="inline-flex items-center justify-center gap-2 rounded-[8px] border border-black/10 px-3 py-2 text-xs font-black text-zinc-800 transition hover:bg-zinc-100"
           >
             <RefreshCw aria-hidden="true" size={13} />
-            다른 후보 보기
+            다른 사진 보기
           </button>
         </div>
       </figcaption>

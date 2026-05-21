@@ -59,7 +59,7 @@ export const siteConfig = {
   domain: "chmi.kr",
   url: "https://chmi.kr",
   description:
-    "cal을 ㅊ미로, youtube를 yoi로 친 사람을 위한 작은 오타 쉼터. 오늘의 밈과 기분 전환을 보여줍니다.",
+    "cal을 ㅊ미로, youtube를 yoi로 친 사람을 위한 작은 오타 쉼터. 오늘의 기분 좋아지는 사진과 바로가기를 보여줍니다.",
 };
 
 const dubeolsikMap: Record<string, string> = {
@@ -686,32 +686,32 @@ export const typoIntents: TypoIntent[] = serviceSeeds.map(createIntent);
 export const delightItems: DelightItem[] = [
   {
     date: "2026-05-21",
-    title: "오늘의 펭귄: 일정도 미끄러질 수 있지",
+    title: "오늘의 숨 고르기",
     caption:
-      "한영키가 삐끗한 날에는 펭귄처럼 태연하게 미끄러져도 됩니다.",
+      "한영키가 삐끗한 날에는 잠깐 느리게 가도 괜찮습니다.",
     image:
       "https://commons.wikimedia.org/wiki/Special:FilePath/Gentoo%20Penguin.%20(9867788974).jpg",
     imageAlt: "눈밭 위의 젠투 펭귄 사진",
     sourceUrl:
       "https://commons.wikimedia.org/wiki/File:Gentoo_Penguin._(9867788974).jpg",
     sourceLicense: "CC0 1.0 Public Domain Dedication",
-    tags: ["penguin", "calendar", "mood"],
+    tags: ["cute", "calendar", "mood"],
   },
   {
     date: "2026-05-19",
-    title: "오늘의 밈: 나만 이런 게 아니었네",
+    title: "오늘의 작은 웃음",
     caption:
-      "주소창에 이상한 단어를 남긴 사람들의 조용한 연대감을 기립니다.",
+      "주소창에 이상한 단어가 남아도 하루가 이상해질 필요는 없으니까요.",
     image:
       "https://commons.wikimedia.org/wiki/Special:FilePath/Cat%20Meme.jpg",
-    imageAlt: "벤치 위 고양이를 사용한 밈 이미지",
+    imageAlt: "벤치 위 고양이 사진",
     sourceUrl: "https://commons.wikimedia.org/wiki/File:Cat_Meme.jpg",
     sourceLicense: "CC BY-SA 2.0",
-    tags: ["meme", "cat", "oops"],
+    tags: ["cute", "cat", "oops"],
   },
   {
     date: "2026-05-16",
-    title: "오늘의 표정: 회의 2분 전의 평온",
+    title: "오늘의 평온",
     caption:
       "캘린더는 놓쳤지만, 웃는 표정은 제시간에 도착했습니다.",
     image:
@@ -724,15 +724,15 @@ export const delightItems: DelightItem[] = [
   },
   {
     date: "2026-05-14",
-    title: "오늘의 반응: 응? 내가 뭘 친 거지?",
+    title: "오늘의 어리둥절",
     caption:
       "yoi를 검색한 순간의 표정을 아주 오래전 인터넷이 이미 알고 있었습니다.",
     image:
       "https://commons.wikimedia.org/wiki/Special:FilePath/Lolwut%20cat.jpg",
-    imageAlt: "놀란 듯한 표정의 고양이 밈 사진",
+    imageAlt: "놀란 듯한 표정의 고양이 사진",
     sourceUrl: "https://commons.wikimedia.org/wiki/File:Lolwut_cat.jpg",
     sourceLicense: "Creative Commons license, Wikimedia Commons",
-    tags: ["meme", "youtube", "cat"],
+    tags: ["cute", "youtube", "cat"],
   },
 ];
 

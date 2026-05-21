@@ -4,14 +4,14 @@ import { JsonLd } from "@/components/json-ld";
 import { absoluteUrl, delightItems, siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "오늘의 밈 아카이브",
+  title: "오늘의 사진 아카이브",
   description:
-    "ㅊ미가 큐레이션한 오늘의 밈, 펭귄 사진, 짧은 기분 전환 기록을 모아둔 아카이브입니다.",
+    "ㅊ미가 큐레이션한 귀여운 사진, 자연 사진, 짧은 기분 전환 기록을 모아둔 아카이브입니다.",
   alternates: {
     canonical: "/archive",
   },
   openGraph: {
-    title: "오늘의 밈 아카이브 | ㅊ미",
+    title: "오늘의 사진 아카이브 | ㅊ미",
     description:
       "한영 전환 실수로 도착한 사람들을 위해 주 3회 큐레이션하는 작은 기분 전환 모음.",
     url: absoluteUrl("/archive"),
@@ -26,7 +26,7 @@ export default function ArchivePage() {
         data={{
           "@context": "https://schema.org",
           "@type": "CollectionPage",
-          name: "오늘의 밈 아카이브",
+          name: "오늘의 사진 아카이브",
           url: absoluteUrl("/archive"),
           inLanguage: "ko-KR",
           isPartOf: {
