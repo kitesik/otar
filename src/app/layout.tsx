@@ -5,11 +5,19 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "ㅊ미 또 눌렀죠? 힐링 하고 가요.",
-    template: "%s | ㅊ미",
+    default: "otar.site | 오타 치고 들어온 사람을 위한 작은 쉼터",
+    template: "%s | otar.site",
   },
   description: siteConfig.description,
   applicationName: siteConfig.name,
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/icon.png",
+  },
   alternates: {
     canonical: "/",
   },
@@ -17,7 +25,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ko_KR",
     siteName: siteConfig.name,
-    title: "ㅊ미 또 눌렀죠? 힐링 하고 가요.",
+    title: "otar.site | 오타 치고 들어온 사람을 위한 작은 쉼터",
     description: siteConfig.description,
     url: siteConfig.url,
     images: [
@@ -25,13 +33,13 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "ㅊ미 오타 랜딩 페이지 미리보기",
+        alt: "otar.site 오타 쉼터 미리보기",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ㅊ미 또 눌렀죠? 힐링 하고 가요.",
+    title: "otar.site | 오타 치고 들어온 사람을 위한 작은 쉼터",
     description: siteConfig.description,
     images: ["/opengraph-image"],
   },
@@ -47,6 +55,10 @@ export const metadata: Metadata = {
     },
   },
   keywords: [
+    "otar.site",
+    "오타",
+    "주소창 오타",
+    "한영키 오타",
     "ㅊ미",
     "cal 한영",
     "cal 잘못침",
