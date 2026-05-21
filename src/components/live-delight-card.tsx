@@ -82,16 +82,13 @@ export function LiveDelightCard({ fallback }: { fallback: DelightItem }) {
 
   return (
     <figure className="mt-9 w-full min-w-0 max-w-full overflow-hidden rounded-[8px] border border-black/10 bg-white shadow-sm sm:max-w-xl">
-      <div className="relative aspect-[4/3] bg-zinc-100">
+      <div className="aspect-[4/3] bg-zinc-100">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={active.image}
           alt={active.imageAlt}
           className="h-full w-full object-cover"
         />
-        <div className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-black text-zinc-800 shadow-sm">
-          {active.source}
-        </div>
       </div>
       <figcaption className="space-y-4 px-4 py-4 text-left">
         <p className="text-lg font-black">{active.title}</p>
