@@ -99,7 +99,7 @@ export default async function OopsPage({ params }: PageProps) {
           <span className="block">또 눌렀죠?</span>
         </h1>
         <h2 className="font-soft mt-3 max-w-full text-[clamp(1.2rem,4.7vw,1.9rem)] font-black leading-tight tracking-normal text-zinc-600">
-          힐링사진보고가요
+          힐링 하고 가요.
         </h2>
 
         <LiveDelightCard fallback={today} />
