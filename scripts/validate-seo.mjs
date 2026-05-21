@@ -3,7 +3,7 @@ const publicOrigin = process.env.SEO_PUBLIC_ORIGIN ?? "https://otar.site";
 
 const requiredDictionaryTerms = [
   "ㅊ미",
-  "cal 한영",
+  "ccal",
   "yoi",
   "chatgpt",
   "claude",
@@ -64,7 +64,8 @@ for (const term of requiredDictionaryTerms) {
 
 const chmi = await text("/oops/chmi");
 assert(chmi.includes("ㅊ미"), "chmi page missing ㅊ미");
-assert(chmi.includes("cal 한영"), "chmi page missing cal 한영");
+assert(!chmi.includes("cal 한영"), "chmi page should not include cal 한영");
+assert(!chmi.includes("cal 잘못침"), "chmi page should not include cal 잘못침");
 assert(chmi.includes(`href="${publicOrigin}/oops/chmi"`), "chmi canonical mismatch");
 assert(
   chmi.includes("ㅊ미는 Google Calendar 오타예요"),

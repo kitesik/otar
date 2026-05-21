@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | Search & portals | Google, Naver, Daum, Wikipedia | `gogle`, `googel`, `해ㅐ히`, `navr`, `ㅜㅁㅍㄷㄱ`, `위키 오타` |
 | AI assistants | ChatGPT, Claude, Perplexity, Gemini, Copilot | `chatgtp`, `chatgptt`, `claude.ai`, `cluade`, `pplx ai`, `gemni`, `copliot` |
-| Work & productivity | Calendar, Gmail, Drive, Docs, Translate, Notion, Slack, GitHub, Figma, Canva | `ㅊ미`, `cal 한영`, `gamil`, `gmial`, `drvie`, `dcos`, `notoin`, `salck`, `gihub`, `fimga`, `cavna` |
+| Work & productivity | Calendar, Gmail, Drive, Docs, Translate, Notion, Slack, GitHub, Figma, Canva | `ㅊ미`, `ccal`, `caal`, `gamil`, `gmial`, `drvie`, `dcos`, `notoin`, `salck`, `gihub`, `fimga`, `cavna` |
 | Video & music | YouTube, Netflix, Spotify, Melon, TVING, Coupang Play | `yoi`, `yoiu`, `youtub`, `yotube`, `netfix`, `spotfy`, `mellon`, `tivng`, `coupang paly` |
 | Social & community | Discord, Instagram, X/Twitter, Facebook, LinkedIn, Reddit, Kakao | `dicord`, `instgram`, `twiter`, `facebok`, `linkdin`, `redit`, `kakaotlak` |
 | Shopping & local | Coupang, Baemin, Karrot/Danggeun, Musinsa, Kurly, Amazon | `couapng`, `baemim`, `danggun`, `musisna`, `marketkurly`, `amazn` |

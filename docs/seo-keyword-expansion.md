@@ -29,7 +29,7 @@ The generator now covers:
 - QWERTY neighbor-key substitutions
 - Vowel-drop variants
 - Domain-style variants such as `.com` and `com`
-- Intent modifiers such as `잘못침`, `한영`, `바로가기`, `로그인`, `login`, and `app`
+- Diagnostic modifiers such as `잘못침`, `한영`, `검색어`, and `바로가기` are excluded from target query generation.
 
 The site does not expose all 54,659 candidates as separate indexed pages. That would risk low-value doorway pages.
 Instead, representative service pages remain indexed, while broader variants are folded into the page copy, dictionary, metadata, and Search Console monitoring workflow.

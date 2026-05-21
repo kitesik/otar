@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "오타 의도 사전 | ㅊ미",
     description:
-      "주소창 오타와 한영 전환 실수를 모아 원래 의도와 바로가기까지 정리합니다.",
+      "주소창 오타와 자판 입력 실수를 모아 원래 의도와 바로가기까지 정리합니다.",
     url: absoluteUrl("/dictionary"),
     images: ["/opengraph-image"],
   },

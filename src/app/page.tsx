@@ -24,8 +24,8 @@ export const metadata: Metadata = {
   keywords: [
     "otar.site",
     "ㅊ미",
-    "cal 한영",
-    "cal 잘못침",
+    "ccal",
+    "caal",
     "yoi",
     "yoiu",
     "chatgtp",
@@ -85,7 +85,7 @@ export default function Home() {
           url: siteConfig.url,
           inLanguage: "ko-KR",
           description:
-            "주소창 오타와 한영키 실수로 들어온 사람을 위한 오타 의도 사전과 힐링 사진 페이지입니다.",
+            "주소창에 잘못 입력한 문자열로 들어온 사람을 위한 오타 의도 사전과 힐링 사진 페이지입니다.",
           mainEntity: {
             "@type": "ItemList",
             numberOfItems: typoIntents.length,
@@ -182,7 +182,7 @@ export default function Home() {
             주소창 오타를 모아두는 작은 쉼터예요
           </h2>
           <p className="mt-3">
-            otar.site는 ㅊ미, cal 한영, yoi, yoiu, chatgtp처럼 원래 가려던
+            otar.site는 ㅊ미, ccal, caal, yoi, yoiu, chatgtp처럼 원래 가려던
             사이트를 주소창에 잘못 입력했을 때 잠깐 들를 수 있는 페이지입니다.
             현재 {typoIntents.length.toLocaleString("ko-KR")}개의 서비스 오타
             의도를 정리하고 있고, 각 페이지는 원래 목적지로 바로 이동할 수 있는

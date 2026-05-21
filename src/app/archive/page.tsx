@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "오늘의 사진 아카이브 | ㅊ미",
     description:
-      "한영 전환 실수로 도착한 사람들을 위해 주 3회 큐레이션하는 작은 기분 전환 모음.",
+      "자판 입력 실수로 도착한 사람들을 위해 주 3회 큐레이션하는 작은 기분 전환 모음.",
     url: absoluteUrl("/archive"),
     images: ["/opengraph-image"],
   },

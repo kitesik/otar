@@ -132,17 +132,17 @@ const qwertyNeighbors: Record<string, string[]> = {
   m: ["n", "j"],
 };
 
-const intentSearchModifiers = [
+const diagnosticQueryTerms = [
+  "오타",
   "잘못침",
   "잘못 침",
   "잘못 쳤을때",
+  "잘못쳤",
+  "잘못 친",
   "한영",
   "한영키",
   "검색어",
   "바로가기",
-  "로그인",
-  "login",
-  "app",
 ];
 
 function isMostlyAscii(input: string) {
@@ -168,7 +168,7 @@ function dedupe(values: string[]) {
 }
 
 function isDiagnosticQuery(value: string) {
-  return value.includes("오타");
+  return diagnosticQueryTerms.some((term) => value.includes(term));
 }
 
 function aliasForms(alias: string) {
@@ -279,17 +279,9 @@ function typoMutations(alias: string) {
 }
 
 function intentQueryPhrases(seed: ServiceSeed, baseQueries: string[]) {
-  const headTerms = dedupe([
-    seed.koreanName,
-    seed.name,
-    ...seed.aliases,
-    ...(seed.typoExamples ?? []),
-    ...baseQueries.slice(0, 18),
-  ]);
-
-  return headTerms.flatMap((term) =>
-    intentSearchModifiers.map((modifier) => `${term} ${modifier}`),
-  );
+  return dedupe([seed.koreanName, seed.name, ...seed.aliases, ...baseQueries])
+    .slice(0, 18)
+    .filter((term) => !isDiagnosticQuery(term));
 }
 
 const serviceSeeds: ServiceSeed[] = [
@@ -301,7 +293,7 @@ const serviceSeeds: ServiceSeed[] = [
     region: "both",
     aliases: ["cal", "calendar", "google calendar", "gcal"],
     destinationUrl: "https://calendar.google.com/calendar/u/0/r",
-    typoExamples: ["ㅊ미", "cal 한영", "cal 잘못침", "구글 캘린더 오타"],
+    typoExamples: ["ㅊ미"],
     note: "영문 입력으로 cal을 치려던 손가락이 한글 자판에 남아 있으면 ㅊ미가 됩니다.",
     wink: "일정은 안 열렸지만, 오늘의 작은 쉼표는 열렸어요.",
   },
@@ -326,7 +318,7 @@ const serviceSeeds: ServiceSeed[] = [
     aliases: ["google", "goog", "g"],
     destinationUrl: "https://www.google.com/",
     typoExamples: ["gogle", "googel", "goole", "googlr", "해ㅐ히"],
-    note: "검색하려고 들어간 주소창에서 google의 o/e 순서가 흔들리거나 한영키가 남아 있을 때 생기는 오타입니다.",
+    note: "검색하려고 들어간 주소창에서 google의 o/e 순서가 흔들리거나 자판 입력이 꼬였을 때 생기는 오타입니다.",
   },
   {
     slug: "naver",
@@ -337,7 +329,7 @@ const serviceSeeds: ServiceSeed[] = [
     aliases: ["naver", "nv", "naver.com"],
     destinationUrl: "https://www.naver.com/",
     typoExamples: ["nver", "navr", "nave", "ㅜㅁㅍㄷㄱ", "네이버 오타"],
-    note: "국내 사용자가 주소창에서 가장 자주 찾는 포털 중 하나라 영문 누락과 한영 전환 실수를 함께 잡습니다.",
+    note: "국내 사용자가 주소창에서 가장 자주 찾는 포털 중 하나라 영문 누락과 자판 입력 실수를 함께 잡습니다.",
   },
   {
     slug: "daum",
@@ -348,7 +340,7 @@ const serviceSeeds: ServiceSeed[] = [
     aliases: ["daum", "hanmail"],
     destinationUrl: "https://www.daum.net/",
     typoExamples: ["dum", "daun", "ㅇ며ㅡ", "다음 오타"],
-    note: "짧은 서비스명은 한 글자 누락과 한영 전환 실수만으로도 검색 의도가 꽤 선명합니다.",
+    note: "짧은 서비스명은 한 글자 누락과 자판 입력 실수만으로도 검색 의도가 꽤 선명합니다.",
   },
   {
     slug: "gmail",
@@ -370,7 +362,7 @@ const serviceSeeds: ServiceSeed[] = [
     aliases: ["drive", "gdrive", "google drive"],
     destinationUrl: "https://drive.google.com/",
     typoExamples: ["drvie", "drv", "ㅇ갸ㅍㄷ", "구글 드라이브 오타"],
-    note: "파일을 찾으려는 의도는 drive, gdrive, 한영 자판 문자열에서 잘 드러납니다.",
+    note: "파일을 찾으려는 의도는 drive, gdrive, 자판이 꼬인 문자열에서 잘 드러납니다.",
   },
   {
     slug: "google-docs",
@@ -392,7 +384,7 @@ const serviceSeeds: ServiceSeed[] = [
     aliases: ["maps", "map", "google maps"],
     destinationUrl: "https://www.google.com/maps",
     typoExamples: ["mpas", "maos", "ㅡㅁㅔㄴ", "구글 지도 오타"],
-    note: "지도 서비스는 짧은 alias가 많아 누락, 인접키, 한영 전환을 함께 노출합니다.",
+    note: "지도 서비스는 짧은 alias가 많아 누락, 인접키, 자판 입력 실수를 함께 노출합니다.",
   },
   {
     slug: "google-translate",
@@ -480,7 +472,7 @@ const serviceSeeds: ServiceSeed[] = [
     aliases: ["slack", "slk"],
     destinationUrl: "https://slack.com/signin",
     typoExamples: ["salck", "slakc", "sclak", "ㄴㅣㅁ차"],
-    note: "짧은 협업툴 이름은 인접키 전치와 한영 전환 실수가 바로 검색어가 됩니다.",
+    note: "짧은 협업툴 이름은 인접키 전치와 자판 입력 실수가 바로 검색어가 됩니다.",
   },
   {
     slug: "discord",
@@ -1890,7 +1882,7 @@ export const delightItems: DelightItem[] = [
     date: "2026-05-21",
     title: "오늘의 숨 고르기",
     caption:
-      "한영키가 삐끗한 날에는 잠깐 느리게 가도 괜찮습니다.",
+      "자판이 삐끗한 날에는 잠깐 느리게 가도 괜찮습니다.",
     image:
       "https://commons.wikimedia.org/wiki/Special:FilePath/Gentoo%20Penguin.%20(9867788974).jpg",
     imageAlt: "눈밭 위의 젠투 펭귄 사진",

@@ -57,8 +57,8 @@ export const metadata: Metadata = {
   keywords: [
     "otar.site",
     "ㅊ미",
-    "cal 한영",
-    "cal 잘못침",
+    "ccal",
+    "caal",
     "yoi",
     "yoiu",
     "chatgtp",
