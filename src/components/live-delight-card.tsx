@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ExternalLink, RefreshCw } from "lucide-react";
 import type { DelightItem } from "@/lib/site";
 
 type LiveDelight = {
@@ -45,9 +44,7 @@ function pickDaily(items: LiveDelight[]) {
 
 export function LiveDelightCard({ fallback }: { fallback: DelightItem }) {
   const fallbackItem = useMemo(() => fallbackToLive(fallback), [fallback]);
-  const [items, setItems] = useState<LiveDelight[]>([fallbackItem]);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [status, setStatus] = useState("오늘의 사진 후보를 불러오는 중");
+  const [active, setActive] = useState<LiveDelight>(fallbackItem);
 
   useEffect(() => {
     let cancelled = false;
@@ -72,15 +69,8 @@ export function LiveDelightCard({ fallback }: { fallback: DelightItem }) {
           item.image && all.findIndex((candidate) => candidate.image === item.image) === index,
       );
       const dailyPick = pickDaily(uniqueItems) ?? fallbackItem;
-      const dailyIndex = uniqueItems.findIndex((item) => item.id === dailyPick.id);
 
-      setItems(uniqueItems);
-      setActiveIndex(Math.max(0, dailyIndex));
-      setStatus(
-        nextItems.length > 0
-          ? `${nextItems.length}개 사진 후보 중 오늘의 하나`
-          : "기본 큐레이션 사진 표시 중",
-      );
+      setActive(dailyPick);
     }
 
     load();
@@ -89,8 +79,6 @@ export function LiveDelightCard({ fallback }: { fallback: DelightItem }) {
       cancelled = true;
     };
   }, [fallbackItem]);
-
-  const active = items[activeIndex] ?? fallbackItem;
 
   return (
     <figure className="mt-9 w-full min-w-0 max-w-full overflow-hidden rounded-[8px] border border-black/10 bg-white shadow-sm sm:max-w-xl">
@@ -106,30 +94,7 @@ export function LiveDelightCard({ fallback }: { fallback: DelightItem }) {
         </div>
       </div>
       <figcaption className="space-y-4 px-4 py-4 text-left">
-        <div className="space-y-2">
-          <p className="text-lg font-black">{active.title}</p>
-          <p className="text-sm leading-6 text-zinc-650">{active.caption}</p>
-          <p className="text-xs font-bold text-zinc-500">{status}</p>
-        </div>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <a
-            href={active.sourceUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1 text-xs font-bold text-zinc-600 underline-offset-4 hover:text-black hover:underline"
-          >
-            출처 보기
-            <ExternalLink aria-hidden="true" size={13} />
-          </a>
-          <button
-            type="button"
-            onClick={() => setActiveIndex((index) => (index + 1) % items.length)}
-            className="inline-flex items-center justify-center gap-2 rounded-[8px] border border-black/10 px-3 py-2 text-xs font-black text-zinc-800 transition hover:bg-zinc-100"
-          >
-            <RefreshCw aria-hidden="true" size={13} />
-            다른 사진 보기
-          </button>
-        </div>
+        <p className="text-lg font-black">{active.title}</p>
       </figcaption>
     </figure>
   );

@@ -35,7 +35,7 @@ export default function Home() {
         }}
       />
       <section className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
-        <h1 className="min-w-0 max-w-full text-[clamp(1.55rem,6vw,3.5rem)] font-black leading-tight tracking-normal">
+        <h1 className="min-w-0 max-w-full text-[clamp(1.45rem,5.6vw,3.5rem)] font-black leading-tight tracking-normal">
           <span className="wrap-anywhere block">{typoLabel}를 치셨나요?</span>
           <span className="block">오늘 기분 좋아지는 사진</span>
           <span className="block">하나 보고 가세요.</span>
