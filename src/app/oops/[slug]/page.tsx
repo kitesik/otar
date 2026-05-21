@@ -94,13 +94,13 @@ export default async function OopsPage({ params }: PageProps) {
       />
 
       <section className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
-        <h1 className="min-w-0 max-w-full text-[clamp(1.9rem,8.5vw,4.5rem)] font-black leading-tight tracking-normal">
+        <h1 className="font-gungsuh min-w-0 max-w-full text-[clamp(1.9rem,8.5vw,4.5rem)] font-black leading-tight tracking-normal">
           <span className="block">항상</span>
           <span className="wrap-anywhere block text-emerald-600">{typoLabel}</span>
           <span className="block">를 누르는 당신,</span>
         </h1>
-        <h2 className="mt-3 max-w-full text-[clamp(1.05rem,4.2vw,1.8rem)] font-black leading-tight tracking-normal text-zinc-600">
-          당신을 위한 힐링 사진이에요
+        <h2 className="font-soft mt-3 max-w-full text-[clamp(1.2rem,4.7vw,1.9rem)] font-black leading-tight tracking-normal text-zinc-600">
+          나를 위한 힐링 사진
         </h2>
 
         <LiveDelightCard fallback={today} />
@@ -109,7 +109,7 @@ export default async function OopsPage({ params }: PageProps) {
           href={intent.destinationUrl}
           target="_blank"
           rel="noreferrer"
-          className="mt-7 inline-flex min-h-12 w-full max-w-sm items-center justify-center gap-2 rounded-[8px] bg-zinc-950 px-5 py-3 text-base font-black text-white transition hover:bg-zinc-800"
+          className="font-soft mt-7 inline-flex min-h-12 w-full max-w-sm items-center justify-center gap-2 rounded-[8px] bg-zinc-950 px-5 py-3 text-base font-black text-white transition hover:bg-zinc-800"
         >
           {intent.intendedService} 바로 열기
           <ExternalLink aria-hidden="true" size={18} />
@@ -117,7 +117,7 @@ export default async function OopsPage({ params }: PageProps) {
 
         <VisitCounter slug={intent.slug} />
 
-        <section className="mt-7 max-w-2xl space-y-2 text-xs leading-6 text-zinc-500">
+        <section className="font-soft mt-7 max-w-2xl space-y-2 text-xs leading-6 text-zinc-500">
           <h2 className="font-bold text-zinc-700">
             이 페이지로 랜딩되는 오타/검색어
           </h2>

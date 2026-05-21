@@ -65,7 +65,7 @@ export function VisitCounter({ slug }: { slug: string }) {
   }, [slug]);
 
   return (
-    <section className="mt-5 w-full max-w-sm rounded-[8px] border border-black/10 bg-zinc-50 px-4 py-3 text-center">
+    <section className="font-soft mt-5 w-full max-w-sm rounded-[8px] border border-black/10 bg-zinc-50 px-4 py-3 text-center">
       <p className="text-sm font-black text-zinc-800">
         오늘 {formatCount(counts.today)}명 / 누적 {formatCount(counts.total)}명
       </p>
