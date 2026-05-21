@@ -5,7 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "otar.site | 오타 치고 들어온 사람을 위한 작은 쉼터",
+    default: "otar.site | 잘못 친 주소도 괜찮아요",
     template: "%s | otar.site",
   },
   description: siteConfig.description,
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ko_KR",
     siteName: siteConfig.name,
-    title: "otar.site | 오타 치고 들어온 사람을 위한 작은 쉼터",
+    title: "otar.site | 잘못 친 주소도 괜찮아요",
     description: siteConfig.description,
     url: siteConfig.url,
     images: [
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "otar.site | 오타 치고 들어온 사람을 위한 작은 쉼터",
+    title: "otar.site | 잘못 친 주소도 괜찮아요",
     description: siteConfig.description,
     images: ["/opengraph-image"],
   },
@@ -56,15 +56,13 @@ export const metadata: Metadata = {
   },
   keywords: [
     "otar.site",
-    "오타",
-    "주소창 오타",
-    "한영키 오타",
     "ㅊ미",
     "cal 한영",
     "cal 잘못침",
-    "구글 캘린더 오타",
-    "youtube 오타",
-    "유튜브 오타",
+    "yoi",
+    "yoiu",
+    "chatgtp",
+    "cluade",
   ],
 };
 

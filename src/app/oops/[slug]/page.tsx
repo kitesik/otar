@@ -57,8 +57,6 @@ export async function generateMetadata({
     },
     keywords: [
       typoLabel,
-      `${typoLabel} 오타`,
-      `${intent.intendedService} 오타`,
       ...intent.keywordCluster,
     ],
     openGraph: {

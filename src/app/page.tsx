@@ -15,7 +15,7 @@ import {
 const featuredIntents = getFeaturedIntents();
 
 export const metadata: Metadata = {
-  title: "otar.site | 오타 치고 들어온 사람을 위한 작은 쉼터",
+  title: "otar.site | 잘못 친 주소도 괜찮아요",
   description:
     "주소창에 ㅊ미, yoi, chatgtp처럼 잘못 입력한 사람을 위한 오타 랜딩 허브입니다. 귀여운 사진 하나 보고, 원래 가려던 사이트로 바로 돌아가세요.",
   alternates: {
@@ -23,17 +23,16 @@ export const metadata: Metadata = {
   },
   keywords: [
     "otar.site",
-    "오타",
-    "주소창 오타",
-    "한영키 오타",
     "ㅊ미",
     "cal 한영",
-    "youtube 오타",
-    "chatgpt 오타",
-    "구글 캘린더 오타",
+    "cal 잘못침",
+    "yoi",
+    "yoiu",
+    "chatgtp",
+    "cluade",
   ],
   openGraph: {
-    title: "otar.site | 오타 치고 들어온 사람을 위한 작은 쉼터",
+    title: "otar.site | 잘못 친 주소도 괜찮아요",
     description:
       "잘못 친 주소도 괜찮아요. 귀여운 사진 하나 보고 원래 가려던 곳으로 돌아가세요.",
     url: siteConfig.url,
@@ -50,7 +49,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "otar.site | 오타 치고 들어온 사람을 위한 작은 쉼터",
+    title: "otar.site | 잘못 친 주소도 괜찮아요",
     description:
       "잘못 친 주소도 괜찮아요. 귀여운 사진 하나 보고 원래 가려던 곳으로 돌아가세요.",
     images: ["/opengraph-image"],

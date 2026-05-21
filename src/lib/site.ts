@@ -125,13 +125,11 @@ const qwertyNeighbors: Record<string, string[]> = {
 };
 
 const intentSearchModifiers = [
-  "오타",
   "잘못침",
   "잘못 침",
   "잘못 쳤을때",
   "한영",
   "한영키",
-  "주소창 오타",
   "검색어",
   "바로가기",
   "로그인",
@@ -159,6 +157,10 @@ function dedupe(values: string[]) {
         .filter(Boolean),
     ),
   );
+}
+
+function isDiagnosticQuery(value: string) {
+  return value.includes("오타");
 }
 
 function aliasForms(alias: string) {
@@ -1829,19 +1831,21 @@ const serviceSeeds: ServiceSeed[] = [
 
 function createIntent(seed: ServiceSeed): TypoIntent {
   const generatedTypos = seed.aliases.flatMap(typoMutations);
+  const directTypoExamples = dedupe(seed.typoExamples ?? []).filter(
+    (query) => !isDiagnosticQuery(query),
+  );
   const baseQueries = dedupe([
-    seed.koreanName,
-    `${seed.koreanName} 오타`,
-    `${seed.name} 오타`,
-    ...seed.aliases,
-    ...(seed.typoExamples ?? []),
+    ...directTypoExamples,
     ...generatedTypos,
+    ...seed.aliases,
+    seed.koreanName,
+    seed.name,
   ]);
   const allQueries = dedupe([
     ...baseQueries,
     ...intentQueryPhrases(seed, baseQueries),
-  ]);
-  const typoExamples = dedupe([...(seed.typoExamples ?? []), ...generatedTypos]).slice(
+  ]).filter((query) => !isDiagnosticQuery(query));
+  const typoExamples = dedupe([...directTypoExamples, ...generatedTypos]).slice(
     0,
     18,
   );

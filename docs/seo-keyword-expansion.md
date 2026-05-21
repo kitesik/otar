@@ -29,10 +29,12 @@ The generator now covers:
 - QWERTY neighbor-key substitutions
 - Vowel-drop variants
 - Domain-style variants such as `.com` and `com`
-- Intent modifiers such as `오타`, `잘못침`, `한영`, `주소창 오타`, `바로가기`, `로그인`, `login`, and `app`
+- Intent modifiers such as `잘못침`, `한영`, `바로가기`, `로그인`, `login`, and `app`
 
 The site does not expose all 54,659 candidates as separate indexed pages. That would risk low-value doorway pages.
 Instead, representative service pages remain indexed, while broader variants are folded into the page copy, dictionary, metadata, and Search Console monitoring workflow.
+
+`오타` is now treated as explanatory page context, not a target query modifier. The target query inventory should prioritize strings people actually type by mistake, such as `ㅊ미`, `yoi`, `chatgtp`, and `gamil`.
 
 ## Selection basis
 
