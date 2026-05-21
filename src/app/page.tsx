@@ -16,6 +16,8 @@ export default function Home() {
     return null;
   }
 
+  const typoLabel = intent.typoExamples[0] ?? intent.slug;
+
   return (
     <main className="min-h-screen bg-white px-5 py-10 text-zinc-950 sm:py-14">
       <JsonLd
@@ -34,8 +36,7 @@ export default function Home() {
       />
       <section className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
         <h1 className="min-w-0 max-w-full text-[clamp(1.55rem,6vw,3.5rem)] font-black leading-tight tracking-normal">
-          <span className="wrap-anywhere block">{intent.intendedService}</span>
-          <span className="block">가는 길에 잠깐 샛길.</span>
+          <span className="wrap-anywhere block">{typoLabel}를 치셨나요?</span>
           <span className="block">오늘 기분 좋아지는 사진</span>
           <span className="block">하나 보고 가세요.</span>
         </h1>
