@@ -36,12 +36,12 @@ export default function Home() {
         }}
       />
       <section className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
-        <h1 className="min-w-0 max-w-full text-[clamp(2.25rem,10vw,4.75rem)] font-black leading-tight tracking-normal">
+        <h1 className="min-w-0 max-w-full text-[clamp(1.9rem,8.5vw,4.5rem)] font-black leading-tight tracking-normal">
           <span className="block">항상</span>
           <span className="wrap-anywhere block text-emerald-600">{typoLabel}</span>
           <span className="block">를 누르는 당신,</span>
         </h1>
-        <h2 className="mt-3 max-w-full text-[clamp(1.25rem,5vw,2rem)] font-black leading-tight tracking-normal text-zinc-600">
+        <h2 className="mt-3 max-w-full text-[clamp(1.05rem,4.2vw,1.8rem)] font-black leading-tight tracking-normal text-zinc-600">
           당신을 위한 힐링 사진이에요
         </h2>
 
