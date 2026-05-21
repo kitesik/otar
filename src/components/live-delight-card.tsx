@@ -15,6 +15,7 @@ type LiveDelight = {
 };
 
 type DelightResponse = {
+  active?: LiveDelight | null;
   candidates?: LiveDelight[];
 };
 
@@ -31,17 +32,6 @@ function fallbackToLive(item: DelightItem): LiveDelight {
   };
 }
 
-function pickDaily(items: LiveDelight[]) {
-  if (items.length === 0) {
-    return null;
-  }
-
-  const now = new Date();
-  const seed =
-    now.getUTCFullYear() * 10000 + (now.getUTCMonth() + 1) * 100 + now.getUTCDate();
-  return items[seed % items.length];
-}
-
 export function LiveDelightCard({ fallback }: { fallback: DelightItem }) {
   const fallbackItem = useMemo(() => fallbackToLive(fallback), [fallback]);
   const [active, setActive] = useState<LiveDelight>(fallbackItem);
@@ -50,12 +40,12 @@ export function LiveDelightCard({ fallback }: { fallback: DelightItem }) {
     let cancelled = false;
 
     async function load() {
-      const nextItems: LiveDelight[] = [];
+      let nextItem: LiveDelight | null = null;
 
       try {
         const response = await fetch("/api/delight");
         const payload = (await response.json()) as DelightResponse;
-        nextItems.push(...(payload.candidates ?? []));
+        nextItem = payload.active ?? payload.candidates?.[0] ?? null;
       } catch {
         // Keep the fallback item when live photo sources are temporarily unavailable.
       }
@@ -64,13 +54,7 @@ export function LiveDelightCard({ fallback }: { fallback: DelightItem }) {
         return;
       }
 
-      const uniqueItems = [fallbackItem, ...nextItems].filter(
-        (item, index, all) =>
-          item.image && all.findIndex((candidate) => candidate.image === item.image) === index,
-      );
-      const dailyPick = pickDaily(uniqueItems) ?? fallbackItem;
-
-      setActive(dailyPick);
+      setActive(nextItem ?? fallbackItem);
     }
 
     load();
