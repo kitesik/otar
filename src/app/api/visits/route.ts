@@ -27,6 +27,20 @@ function getBaseTotal() {
   return Number(process.env.VISIT_COUNTER_BASE_TOTAL ?? 5);
 }
 
+function fallbackCounts({
+  counted = false,
+}: {
+  counted?: boolean;
+} = {}): CountResponse {
+  const baseTotal = getBaseTotal();
+
+  return {
+    today: counted ? 1 : 0,
+    total: baseTotal + (counted ? 1 : 0),
+    configured: false,
+  };
+}
+
 function getSeoulDate() {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Seoul",
@@ -105,11 +119,7 @@ export async function POST(request: Request) {
   const baseTotal = getBaseTotal();
 
   if (!config) {
-    return NextResponse.json<CountResponse>({
-      today: 0,
-      total: baseTotal,
-      configured: false,
-    });
+    return NextResponse.json<CountResponse>(fallbackCounts({ counted: true }));
   }
 
   try {
@@ -137,6 +147,6 @@ export async function POST(request: Request) {
       configured: true,
     });
   } catch {
-    return NextResponse.json(await getCounts());
+    return NextResponse.json(fallbackCounts({ counted: true }));
   }
 }
