@@ -37,9 +37,8 @@ export default function Home() {
       />
       <section className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
         <h1 className="font-gungsuh min-w-0 max-w-full text-[clamp(1.9rem,8.5vw,4.5rem)] font-black leading-tight tracking-normal">
-          <span className="block">항상</span>
           <span className="wrap-anywhere block text-emerald-600">{typoLabel}</span>
-          <span className="block">를 누르는 당신,</span>
+          <span className="block">그만 눌러</span>
         </h1>
         <h2 className="font-soft mt-3 max-w-full text-[clamp(1.2rem,4.7vw,1.9rem)] font-black leading-tight tracking-normal text-zinc-600">
           나를 위한 힐링 사진
