@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type VisitCounts = {
   today: number;
@@ -12,16 +12,8 @@ function formatCount(value: number) {
   return new Intl.NumberFormat("ko-KR").format(value);
 }
 
-function getLocalDate() {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Seoul",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date());
-}
-
 export function VisitCounter({ slug }: { slug: string }) {
+  const countedRef = useRef(false);
   const [counts, setCounts] = useState<VisitCounts>({
     today: 0,
     total: 0,
@@ -32,21 +24,20 @@ export function VisitCounter({ slug }: { slug: string }) {
     let cancelled = false;
 
     async function load() {
-      const storageKey = `otar-visit-counted:${getLocalDate()}:${slug}`;
-      const alreadyCounted =
-        typeof window !== "undefined" && window.localStorage.getItem(storageKey);
+      if (countedRef.current) {
+        return;
+      }
+
+      countedRef.current = true;
       const response = await fetch("/api/visits", {
-        method: alreadyCounted ? "GET" : "POST",
+        method: "POST",
+        cache: "no-store",
         headers: {
           "Content-Type": "application/json",
         },
-        body: alreadyCounted ? undefined : JSON.stringify({ slug }),
+        body: JSON.stringify({ slug }),
       });
       const payload = (await response.json()) as VisitCounts;
-
-      if (!alreadyCounted) {
-        window.localStorage.setItem(storageKey, "1");
-      }
 
       if (!cancelled) {
         setCounts(payload);
