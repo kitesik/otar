@@ -5,10 +5,10 @@
 첫 SEO 실험용 주소는 아래처럼 짧은 하위 도메인을 권장합니다.
 
 ```text
-https://otar.tasteof-sik.com
+https://otar.tasteof-sik.xyz
 ```
 
-실제 보유 도메인의 TLD가 다르면 `tasteof-sik.com`만 보유 도메인으로 바꿉니다.
+실제 보유 도메인은 `tasteof-sik.xyz`입니다.
 
 ## Vercel 설정
 
@@ -17,7 +17,7 @@ https://otar.tasteof-sik.com
 3. Environment Variables에 아래 값을 추가합니다.
 
 ```text
-NEXT_PUBLIC_SITE_URL=https://otar.tasteof-sik.com
+NEXT_PUBLIC_SITE_URL=https://otar.tasteof-sik.xyz
 ```
 
 4. 자연 사진까지 섞고 싶으면 선택적으로 아래 값을 추가합니다.
@@ -31,15 +31,15 @@ UNSPLASH_ACCESS_KEY=<unsplash access key>
 Vercel 프로젝트의 Domains 메뉴에서 하위 도메인을 추가합니다.
 
 ```text
-otar.tasteof-sik.com
+otar.tasteof-sik.xyz
 ```
 
-DNS 제공자에서 Vercel 안내에 맞춰 `CNAME`을 추가합니다.
+DNS 제공자에서 Vercel 안내에 맞춰 `A` 레코드를 추가합니다.
 
 ```text
-Type: CNAME
+Type: A
 Name: otar
-Value: cname.vercel-dns.com
+Value: 76.76.21.21
 ```
 
 루트 도메인의 DNS를 Vercel로 위임해둔 상태라면 Vercel이 자동으로 레코드를 잡을 수 있습니다.
@@ -49,31 +49,31 @@ Value: cname.vercel-dns.com
 아래 URL을 확인합니다.
 
 ```text
-https://otar.tasteof-sik.com
-https://otar.tasteof-sik.com/oops/chmi
-https://otar.tasteof-sik.com/sitemap.xml
-https://otar.tasteof-sik.com/robots.txt
+https://otar.tasteof-sik.xyz
+https://otar.tasteof-sik.xyz/oops/chmi
+https://otar.tasteof-sik.xyz/sitemap.xml
+https://otar.tasteof-sik.xyz/robots.txt
 ```
 
 로컬에서 실제 도메인 기준 SEO 검증을 하려면:
 
 ```powershell
-$env:SEO_BASE_URL="https://otar.tasteof-sik.com"
-$env:SEO_PUBLIC_ORIGIN="https://otar.tasteof-sik.com"
+$env:SEO_BASE_URL="https://otar.tasteof-sik.xyz"
+$env:SEO_PUBLIC_ORIGIN="https://otar.tasteof-sik.xyz"
 npm.cmd run validate:seo
 ```
 
 ## Search Console
 
-1. Google Search Console에서 `https://otar.tasteof-sik.com` URL-prefix 속성을 추가합니다.
+1. Google Search Console에서 `https://otar.tasteof-sik.xyz` URL-prefix 속성을 추가합니다.
 2. Vercel 도메인이 붙은 뒤 HTML/meta 또는 DNS 방식으로 소유권을 확인합니다.
-3. `https://otar.tasteof-sik.com/sitemap.xml`을 제출합니다.
+3. `https://otar.tasteof-sik.xyz/sitemap.xml`을 제출합니다.
 4. 먼저 아래 URL들을 URL 검사로 색인 요청합니다.
 
 ```text
-https://otar.tasteof-sik.com/
-https://otar.tasteof-sik.com/oops/chmi
-https://otar.tasteof-sik.com/oops/youtube-typo
-https://otar.tasteof-sik.com/oops/chatgpt
-https://otar.tasteof-sik.com/dictionary
+https://otar.tasteof-sik.xyz/
+https://otar.tasteof-sik.xyz/oops/chmi
+https://otar.tasteof-sik.xyz/oops/youtube-typo
+https://otar.tasteof-sik.xyz/oops/chatgpt
+https://otar.tasteof-sik.xyz/dictionary
 ```
