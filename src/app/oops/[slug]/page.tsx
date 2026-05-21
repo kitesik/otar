@@ -93,13 +93,13 @@ export default async function OopsPage({ params }: PageProps) {
       />
 
       <section className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
-        <h1 className="min-w-0 max-w-full text-[clamp(1.45rem,5.6vw,3.5rem)] font-black leading-tight tracking-normal">
-          <span className="wrap-anywhere block">
-            <span className="text-emerald-600">{typoLabel}</span>를 치셨나요?
-          </span>
-          <span className="block">오늘 기분 좋아지는 사진</span>
-          <span className="block">하나 보고 가세요.</span>
+        <h1 className="min-w-0 max-w-full text-[clamp(2.25rem,10vw,4.75rem)] font-black leading-tight tracking-normal">
+          <span className="wrap-anywhere block text-emerald-600">{typoLabel}</span>
+          <span className="block">를 친 당신,</span>
         </h1>
+        <h2 className="mt-3 max-w-full text-[clamp(1.25rem,5vw,2rem)] font-black leading-tight tracking-normal text-zinc-600">
+          기분 좋게 하루를 보내요
+        </h2>
 
         <LiveDelightCard fallback={today} />
 
