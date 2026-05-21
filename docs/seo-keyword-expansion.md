@@ -10,6 +10,30 @@ The generated sitemap now includes 143 public URLs:
 - `/archive`
 - 140 `/oops/[slug]` typo intent pages
 
+## 2026-05-21 typo coverage hardening
+
+The typo candidate generator was expanded from a few hand-picked variants into a broader intent pool.
+The current generated inventory is:
+
+- 140 representative service intents
+- 54,659 typo/search phrase candidates
+- 8 service categories
+
+The generator now covers:
+
+- Korean/English keyboard-state mistakes, such as `cal` → `ㅊ미`
+- Space, dot, hyphen, plus, and compact variants
+- Character deletion
+- Adjacent character transposition
+- Accidental duplicate letters
+- QWERTY neighbor-key substitutions
+- Vowel-drop variants
+- Domain-style variants such as `.com` and `com`
+- Intent modifiers such as `오타`, `잘못침`, `한영`, `주소창 오타`, `바로가기`, `로그인`, `login`, and `app`
+
+The site does not expose all 54,659 candidates as separate indexed pages. That would risk low-value doorway pages.
+Instead, representative service pages remain indexed, while broader variants are folded into the page copy, dictionary, metadata, and Search Console monitoring workflow.
+
 ## Selection basis
 
 Services were prioritized when they are likely to be typed directly into a browser address bar by Korean or global users.
@@ -39,6 +63,8 @@ This site intentionally avoids generating arbitrary typo pages from every possib
 Each indexed page should represent a recognizable service intent, include a real destination button, and show the typo/search terms transparently on the page.
 
 If Search Console shows no impressions after several weeks, low-signal pages should be reviewed and either rewritten, consolidated, or moved to `noindex`.
+
+Do not expand every generated keyword into its own URL without evidence. Use Search Console impressions and clicks to decide which candidate deserves a distinct page.
 
 ## Validation
 

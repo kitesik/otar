@@ -95,6 +95,54 @@ const dubeolsikMap: Record<string, string> = {
   m: "ㅡ",
 };
 
+const qwertyNeighbors: Record<string, string[]> = {
+  q: ["w", "a"],
+  w: ["q", "e", "s"],
+  e: ["w", "r", "d"],
+  r: ["e", "t", "f"],
+  t: ["r", "y", "g"],
+  y: ["t", "u", "h"],
+  u: ["y", "i", "j"],
+  i: ["u", "o", "k"],
+  o: ["i", "p", "l"],
+  p: ["o"],
+  a: ["q", "s", "z"],
+  s: ["a", "w", "d", "x"],
+  d: ["s", "e", "f", "c"],
+  f: ["d", "r", "g", "v"],
+  g: ["f", "t", "h", "b"],
+  h: ["g", "y", "j", "n"],
+  j: ["h", "u", "k", "m"],
+  k: ["j", "i", "l"],
+  l: ["k", "o"],
+  z: ["a", "x"],
+  x: ["z", "s", "c"],
+  c: ["x", "d", "v"],
+  v: ["c", "f", "b"],
+  b: ["v", "g", "n"],
+  n: ["b", "h", "m"],
+  m: ["n", "j"],
+};
+
+const intentSearchModifiers = [
+  "오타",
+  "잘못침",
+  "잘못 침",
+  "잘못 쳤을때",
+  "한영",
+  "한영키",
+  "주소창 오타",
+  "검색어",
+  "바로가기",
+  "로그인",
+  "login",
+  "app",
+];
+
+function isMostlyAscii(input: string) {
+  return /^[\x00-\x7F]+$/.test(input);
+}
+
 function toHangulKeyboard(input: string) {
   return input
     .toLowerCase()
@@ -104,23 +152,134 @@ function toHangulKeyboard(input: string) {
 }
 
 function dedupe(values: string[]) {
-  return Array.from(new Set(values.filter(Boolean)));
+  return Array.from(
+    new Set(
+      values
+        .map((value) => value.trim().replace(/\s+/g, " "))
+        .filter(Boolean),
+    ),
+  );
+}
+
+function aliasForms(alias: string) {
+  const normalized = alias.toLowerCase().trim();
+  const compact = normalized.replace(/[\s._-]+/g, "");
+  const spaced = normalized.replace(/[._-]+/g, " ");
+  const dotted = normalized.replace(/\s+/g, ".");
+  const hyphenated = normalized.replace(/\s+/g, "-");
+  const withoutPlus = normalized.replace(/\+/g, " plus");
+
+  return dedupe([
+    normalized,
+    compact,
+    spaced,
+    dotted,
+    hyphenated,
+    withoutPlus,
+    normalized.endsWith(".com") ? normalized.replace(/\.com$/, "") : "",
+    normalized.includes(".") ? normalized.replace(/\./g, " ") : "",
+  ]);
+}
+
+function adjacentTypos(input: string) {
+  if (!isMostlyAscii(input)) {
+    return [];
+  }
+
+  const normalized = input.toLowerCase();
+  const typos: string[] = [];
+
+  for (let index = 0; index < normalized.length; index += 1) {
+    const letter = normalized[index];
+    const neighbors = qwertyNeighbors[letter] ?? [];
+
+    for (const neighbor of neighbors.slice(0, 2)) {
+      typos.push(`${normalized.slice(0, index)}${neighbor}${normalized.slice(index + 1)}`);
+    }
+  }
+
+  return typos;
+}
+
+function deletionTypos(input: string) {
+  if (input.length < 4) {
+    return [];
+  }
+
+  return input
+    .split("")
+    .map((_, index) => `${input.slice(0, index)}${input.slice(index + 1)}`)
+    .filter((value) => value.length >= 2);
+}
+
+function transpositionTypos(input: string) {
+  if (input.length < 4) {
+    return [];
+  }
+
+  return input
+    .split("")
+    .flatMap((_, index) => {
+      if (index >= input.length - 1) {
+        return [];
+      }
+
+      return `${input.slice(0, index)}${input[index + 1]}${input[index]}${input.slice(index + 2)}`;
+    });
+}
+
+function duplicationTypos(input: string) {
+  if (input.length < 3) {
+    return [];
+  }
+
+  return input
+    .split("")
+    .map((letter, index) => `${input.slice(0, index)}${letter}${input.slice(index)}`)
+    .filter((value) => value.length <= 24);
+}
+
+function vowelDropTypos(input: string) {
+  if (!isMostlyAscii(input) || input.length < 5) {
+    return [];
+  }
+
+  return ["a", "e", "i", "o", "u"].map((vowel) => input.replace(vowel, ""));
 }
 
 function typoMutations(alias: string) {
-  const normalized = alias.toLowerCase();
-  const mutations = [
-    toHangulKeyboard(normalized),
-    normalized.length > 3 ? normalized.slice(0, -1) : "",
-    normalized.length > 4
-      ? `${normalized.slice(0, 2)}${normalized.slice(3)}`
-      : "",
-    normalized.length > 4
-      ? `${normalized.slice(0, 2)}${normalized[3]}${normalized[2]}${normalized.slice(4)}`
-      : "",
-  ];
+  const forms = aliasForms(alias);
+  const mutations = forms.flatMap((form) => {
+    const compact = form.replace(/\s+/g, "");
 
-  return dedupe(mutations).filter((value) => value !== normalized);
+    return [
+      toHangulKeyboard(form),
+      form.length > 3 ? form.slice(0, -1) : "",
+      form.length > 3 ? `${form}.com` : "",
+      form.length > 3 ? `${form} com` : "",
+      ...deletionTypos(compact),
+      ...transpositionTypos(compact),
+      ...duplicationTypos(compact),
+      ...adjacentTypos(compact),
+      ...vowelDropTypos(compact),
+    ];
+  });
+
+  return dedupe(mutations).filter((value) => !forms.includes(value));
+}
+
+function intentQueryPhrases(seed: ServiceSeed, baseQueries: string[]) {
+  const headTerms = dedupe([
+    seed.koreanName,
+    seed.name,
+    ...seed.aliases,
+    ...(seed.typoExamples ?? []),
+    ...baseQueries.slice(0, 18),
+  ]);
+
+  return headTerms.flatMap((term) =>
+    intentSearchModifiers.map((modifier) => `${term} ${modifier}`),
+  );
 }
 
 const serviceSeeds: ServiceSeed[] = [
@@ -1670,13 +1829,17 @@ const serviceSeeds: ServiceSeed[] = [
 
 function createIntent(seed: ServiceSeed): TypoIntent {
   const generatedTypos = seed.aliases.flatMap(typoMutations);
-  const allQueries = dedupe([
+  const baseQueries = dedupe([
     seed.koreanName,
     `${seed.koreanName} 오타`,
     `${seed.name} 오타`,
     ...seed.aliases,
-    ...generatedTypos,
     ...(seed.typoExamples ?? []),
+    ...generatedTypos,
+  ]);
+  const allQueries = dedupe([
+    ...baseQueries,
+    ...intentQueryPhrases(seed, baseQueries),
   ]);
   const typoExamples = dedupe([...(seed.typoExamples ?? []), ...generatedTypos]).slice(
     0,

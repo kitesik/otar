@@ -54,6 +54,20 @@ export default function DictionaryPage() {
           ],
         }}
       />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: "오타 의도 사전",
+          numberOfItems: typoIntents.length,
+          itemListElement: typoIntents.slice(0, 100).map((intent, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            url: absoluteUrl(intent.canonicalPath),
+            name: `${intent.intendedService} 오타`,
+          })),
+        }}
+      />
       <section className="border-b border-black/10 bg-[#fffdf7]">
         <div className="mx-auto max-w-6xl space-y-5 px-5 py-12">
           <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-800">
@@ -141,6 +155,28 @@ export default function DictionaryPage() {
                               </span>
                             ) : null}
                           </div>
+                          {intent.queries.length > 18 ? (
+                            <details className="rounded-[8px] border border-zinc-200 bg-zinc-50 p-3 text-sm">
+                              <summary className="cursor-pointer font-black text-zinc-700">
+                                주요 오타/검색어 후보 더 보기
+                              </summary>
+                              <div className="mt-3 flex flex-wrap gap-2">
+                                {intent.queries.slice(18, 72).map((query) => (
+                                  <span
+                                    key={query}
+                                    className="rounded-full bg-white px-2 py-1 text-xs font-bold text-zinc-600"
+                                  >
+                                    {query}
+                                  </span>
+                                ))}
+                                {intent.queries.length > 72 ? (
+                                  <span className="rounded-full bg-emerald-100 px-2 py-1 text-xs font-black text-emerald-900">
+                                    추가 후보 {intent.queries.length - 72}개는 각 랜딩 페이지에서 분산 반영
+                                  </span>
+                                ) : null}
+                              </div>
+                            </details>
+                          ) : null}
                         </div>
                         <ArrowRight
                           aria-hidden="true"

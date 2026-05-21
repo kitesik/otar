@@ -16,6 +16,7 @@ export function TypoSeoContext({
 }: TypoSeoContextProps) {
   const sectionId = `typo-context-${intent.slug}`;
   const visibleQueries = intent.queries.slice(0, queryLimit);
+  const remainingQueries = intent.queries.slice(queryLimit);
   const related = relatedIntents
     .filter((relatedIntent) => relatedIntent.slug !== intent.slug)
     .slice(0, 5);
@@ -53,6 +54,23 @@ export function TypoSeoContext({
             </li>
           ))}
         </ul>
+        {remainingQueries.length > 0 ? (
+          <details className="group rounded-[8px] border border-zinc-200 bg-zinc-50 p-3">
+            <summary className="cursor-pointer text-xs font-black text-zinc-700">
+              오타 후보 {remainingQueries.length}개 더 보기
+            </summary>
+            <ul className="mt-3 flex flex-wrap gap-2" aria-label={`${typoLabel} 추가 검색어`}>
+              {remainingQueries.slice(0, 96).map((query) => (
+                <li
+                  key={query}
+                  className="wrap-anywhere rounded-[6px] bg-white px-2 py-1 text-zinc-500 [word-break:break-all]"
+                >
+                  {query}
+                </li>
+              ))}
+            </ul>
+          </details>
+        ) : null}
       </div>
 
       {related.length > 0 ? (

@@ -136,6 +136,32 @@ export default async function OopsPage({ params }: PageProps) {
           },
         }}
       />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "홈",
+              item: siteConfig.url,
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "오타 의도 사전",
+              item: absoluteUrl("/dictionary"),
+            },
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: `${typoLabel} 오타`,
+              item: absoluteUrl(intent.canonicalPath),
+            },
+          ],
+        }}
+      />
 
       <section className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
         <h1 className="font-gungsuh min-w-0 max-w-full text-[clamp(1.9rem,8.5vw,4.5rem)] font-black leading-tight tracking-normal">
