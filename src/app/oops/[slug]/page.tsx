@@ -118,6 +118,10 @@ export default async function OopsPage({ params }: PageProps) {
           <h2 className="font-bold text-zinc-700">
             이 페이지로 랜딩되는 오타/검색어
           </h2>
+          <p className="text-zinc-600">
+            {typoLabel}는 {intent.intendedService}로 가려다 생길 수 있는
+            주소창 오타예요. 원래 목적지는 아래 버튼으로 바로 열 수 있습니다.
+          </p>
           <p className="wrap-anywhere [word-break:break-all]">
             {intent.queries.slice(0, 32).join(" · ")}
           </p>
