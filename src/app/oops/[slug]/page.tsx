@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ExternalLink } from "lucide-react";
 import { JsonLd } from "@/components/json-ld";
+import { LiveDelightCard } from "@/components/live-delight-card";
 import {
   absoluteUrl,
   getIntentBySlug,
@@ -90,30 +90,14 @@ export default async function OopsPage({ params }: PageProps) {
         }}
       />
 
-      <section className="mx-auto flex max-w-3xl flex-col items-center text-center">
-        <h1 className="wrap-anywhere max-w-3xl text-4xl font-black leading-tight tracking-normal sm:text-6xl">
-          {intent.intendedService}로 가고 싶으셨나요?
-          <br />
-          오늘의 밈 보고 가세요
+      <section className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
+        <h1 className="min-w-0 max-w-full text-[clamp(1.65rem,6.4vw,3.75rem)] font-black leading-tight tracking-normal">
+          <span className="block break-words">{intent.intendedService}로 가고</span>
+          <span className="block">싶으셨나요?</span>
+          <span className="block whitespace-nowrap">오늘의 밈 보고 가세요</span>
         </h1>
 
-        <figure className="mt-9 w-full max-w-xl overflow-hidden rounded-[8px] border border-black/10 bg-white shadow-sm">
-          <div className="relative aspect-[4/3]">
-            <Image
-              src={today.image}
-              alt={today.imageAlt}
-              fill
-              priority
-              sizes="(max-width: 768px) 92vw, 560px"
-              className="object-cover"
-              unoptimized
-            />
-          </div>
-          <figcaption className="space-y-2 px-4 py-4 text-left">
-            <p className="text-lg font-black">{today.title}</p>
-            <p className="text-sm leading-6 text-zinc-650">{today.caption}</p>
-          </figcaption>
-        </figure>
+        <LiveDelightCard fallback={today} />
 
         <a
           href={intent.destinationUrl}
