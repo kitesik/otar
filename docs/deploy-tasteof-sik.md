@@ -26,6 +26,26 @@ NEXT_PUBLIC_SITE_URL=https://otar.tasteof-sik.xyz
 UNSPLASH_ACCESS_KEY=<unsplash access key>
 ```
 
+5. 페이지 안 방문자 카운터를 실제 값으로 쓰려면 Upstash Redis 또는 Vercel KV를 연결하고 아래 값 중 한 쌍을 추가합니다.
+
+```text
+KV_REST_API_URL=<vercel kv rest url>
+KV_REST_API_TOKEN=<vercel kv rest token>
+```
+
+또는:
+
+```text
+UPSTASH_REDIS_REST_URL=<upstash redis rest url>
+UPSTASH_REDIS_REST_TOKEN=<upstash redis rest token>
+```
+
+처음 누적 숫자를 1,000부터 시작하고 싶다면 선택적으로:
+
+```text
+VISIT_COUNTER_BASE_TOTAL=1000
+```
+
 ## 도메인 연결
 
 Vercel 프로젝트의 Domains 메뉴에서 하위 도메인을 추가합니다.

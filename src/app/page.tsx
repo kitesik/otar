@@ -1,6 +1,7 @@
 import { ExternalLink } from "lucide-react";
 import { JsonLd } from "@/components/json-ld";
 import { LiveDelightCard } from "@/components/live-delight-card";
+import { VisitCounter } from "@/components/visit-counter";
 import {
   absoluteUrl,
   getIntentBySlug,
@@ -55,6 +56,8 @@ export default function Home() {
           {intent.intendedService} 바로 열기
           <ExternalLink aria-hidden="true" size={18} />
         </a>
+
+        <VisitCounter slug={intent.slug} />
 
         <section className="mt-7 max-w-2xl space-y-2 text-xs leading-6 text-zinc-500">
           <h2 className="font-bold text-zinc-700">
