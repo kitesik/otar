@@ -9,6 +9,7 @@ type CountResponse = {
   today: number;
   total: number;
   configured: boolean;
+  provider: "redis" | "external" | "fallback";
 };
 
 function getRedisConfig(): RedisConfig | null {
@@ -38,6 +39,7 @@ function fallbackCounts({
     today: counted ? 1 : 0,
     total: baseTotal + (counted ? 1 : 0),
     configured: false,
+    provider: "fallback",
   };
 }
 
@@ -77,15 +79,114 @@ async function redisCommand<T>(
   return payload.result;
 }
 
+type ExternalCountResponse = {
+  value?: string | number;
+};
+
+function getExternalCounterBaseUrl() {
+  return (
+    process.env.VISIT_COUNTER_EXTERNAL_BASE_URL ??
+    "https://countapi.mileshilliard.com/api/v1"
+  ).replace(/\/$/, "");
+}
+
+function getExternalCounterNamespace() {
+  return process.env.VISIT_COUNTER_NAMESPACE ?? "otar_site_live";
+}
+
+function isExternalCounterEnabled() {
+  return process.env.VISIT_COUNTER_EXTERNAL_DISABLED !== "1";
+}
+
+function counterKey(...parts: string[]) {
+  const safeParts = parts
+    .join(":")
+    .toLowerCase()
+    .replace(/[^a-z0-9:_-]/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 180);
+
+  return encodeURIComponent(`${getExternalCounterNamespace()}:${safeParts}`);
+}
+
+async function externalCounter(
+  command: "get" | "hit",
+  ...parts: string[]
+): Promise<number> {
+  const response = await fetch(
+    `${getExternalCounterBaseUrl()}/${command}/${counterKey(...parts)}`,
+    {
+      cache: "no-store",
+    },
+  );
+
+  if (command === "get" && response.status === 404) {
+    return 0;
+  }
+
+  if (!response.ok) {
+    throw new Error(`External counter ${command} failed`);
+  }
+
+  const payload = (await response.json()) as ExternalCountResponse;
+  return Number(payload.value ?? 0);
+}
+
+async function getExternalCounts(): Promise<CountResponse> {
+  const baseTotal = getBaseTotal();
+  const todayKey = getSeoulDate();
+  const [today, total] = await Promise.all([
+    externalCounter("get", "daily", todayKey),
+    externalCounter("get", "total"),
+  ]);
+
+  return {
+    today,
+    total: total + baseTotal,
+    configured: true,
+    provider: "external",
+  };
+}
+
+async function hitExternalCounts(slug?: string): Promise<CountResponse> {
+  const baseTotal = getBaseTotal();
+  const todayKey = getSeoulDate();
+  const commands = [
+    externalCounter("hit", "daily", todayKey),
+    externalCounter("hit", "total"),
+  ];
+
+  if (slug) {
+    commands.push(
+      externalCounter("hit", "slug", slug, "daily", todayKey),
+      externalCounter("hit", "slug", slug, "total"),
+    );
+  }
+
+  const [today, total] = await Promise.all(commands);
+
+  return {
+    today,
+    total: total + baseTotal,
+    configured: true,
+    provider: "external",
+  };
+}
+
 async function getCounts(): Promise<CountResponse> {
   const config = getRedisConfig();
   const baseTotal = getBaseTotal();
 
   if (!config) {
+    if (isExternalCounterEnabled()) {
+      return getExternalCounts();
+    }
+
     return {
       today: 0,
       total: baseTotal,
       configured: false,
+      provider: "fallback",
     };
   }
 
@@ -99,6 +200,7 @@ async function getCounts(): Promise<CountResponse> {
     today: Number(today ?? 0),
     total: Number(total ?? 0) + baseTotal,
     configured: true,
+    provider: "redis",
   };
 }
 
@@ -110,21 +212,29 @@ export async function GET() {
       today: 0,
       total: getBaseTotal(),
       configured: false,
+      provider: "fallback",
     });
   }
 }
 
 export async function POST(request: Request) {
   const config = getRedisConfig();
-  const baseTotal = getBaseTotal();
+  const body = (await request.json().catch(() => ({}))) as { slug?: string };
+  const slug = body.slug?.replace(/[^a-z0-9-]/gi, "").slice(0, 80);
 
   if (!config) {
+    if (isExternalCounterEnabled()) {
+      try {
+        return NextResponse.json<CountResponse>(await hitExternalCounts(slug));
+      } catch {
+        return NextResponse.json<CountResponse>(fallbackCounts({ counted: true }));
+      }
+    }
+
     return NextResponse.json<CountResponse>(fallbackCounts({ counted: true }));
   }
 
   try {
-    const body = (await request.json().catch(() => ({}))) as { slug?: string };
-    const slug = body.slug?.replace(/[^a-z0-9-]/gi, "").slice(0, 80);
     const todayKey = `otar:visits:daily:${getSeoulDate()}`;
     const totalKey = "otar:visits:total";
     const commands = [
@@ -143,8 +253,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json<CountResponse>({
       today: Number(today ?? 0),
-      total: Number(total ?? 0) + baseTotal,
+      total: Number(total ?? 0) + getBaseTotal(),
       configured: true,
+      provider: "redis",
     });
   } catch {
     return NextResponse.json(fallbackCounts({ counted: true }));
