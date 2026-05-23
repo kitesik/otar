@@ -1847,7 +1847,7 @@ function createIntent(seed: ServiceSeed): TypoIntent {
   ]).filter((query) => !isDiagnosticQuery(query));
   const typoExamples = dedupe([...directTypoExamples, ...generatedTypos]).slice(
     0,
-    18,
+    72,
   );
 
   return {
@@ -1953,7 +1953,7 @@ export function getIndexedIntents() {
   return typoIntents.filter((intent) => intent.indexingMode === "index");
 }
 
-const landingVariantsPerIntent = 10;
+const landingVariantsPerIntent = 72;
 
 function toLandingSlug(label: string) {
   return label

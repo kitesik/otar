@@ -5,6 +5,7 @@ import { JsonLd } from "@/components/json-ld";
 import {
   absoluteUrl,
   getIntentsByCategory,
+  getLandingVariants,
   serviceCategories,
   siteConfig,
   typoIntents,
@@ -27,9 +28,12 @@ export const metadata: Metadata = {
 };
 
 export default function DictionaryPage() {
-  const queryCount = typoIntents.reduce(
-    (total, intent) => total + intent.queries.length,
-    0,
+  const landingVariants = getLandingVariants();
+  const variantsByIntent = new Map(
+    typoIntents.map((intent) => [
+      intent.slug,
+      landingVariants.filter((variant) => variant.intent.slug === intent.slug),
+    ]),
   );
 
   return (
@@ -88,8 +92,8 @@ export default function DictionaryPage() {
               <span className="text-sm font-bold text-zinc-600">대표 서비스</span>
             </div>
             <div className="rounded-[8px] border border-black/10 bg-white p-4">
-              <strong className="block text-2xl">{queryCount}</strong>
-              <span className="text-sm font-bold text-zinc-600">검색어 후보</span>
+              <strong className="block text-2xl">{landingVariants.length}</strong>
+              <span className="text-sm font-bold text-zinc-600">랜딩 URL</span>
             </div>
             <div className="rounded-[8px] border border-black/10 bg-white p-4">
               <strong className="block text-2xl">{serviceCategories.length}</strong>
@@ -118,74 +122,76 @@ export default function DictionaryPage() {
                   </p>
                 </div>
                 <div className="grid gap-4">
-                  {intents.map((intent) => (
-                    <Link
-                      key={intent.slug}
-                      href={`/oops/${intent.slug}`}
-                      className="rounded-[8px] border border-black/10 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-black/25"
-                    >
-                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="min-w-0 space-y-3">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <strong className="text-2xl">
-                              {intent.intendedService}
-                            </strong>
-                            <span className="rounded-full bg-amber-100 px-2 py-1 text-xs font-bold text-amber-950">
-                              {intent.indexingMode}
-                            </span>
-                            <span className="rounded-full bg-zinc-100 px-2 py-1 text-xs font-bold text-zinc-700">
-                              {intent.region}
-                            </span>
-                          </div>
-                          <p className="text-base leading-7 text-zinc-700">
-                            {intent.explanation}
-                          </p>
-                          <div className="flex flex-wrap gap-2">
-                            {intent.queries.slice(0, 18).map((query) => (
-                              <span
-                                key={query}
-                                className="rounded-full bg-zinc-100 px-2 py-1 text-xs font-bold text-zinc-700"
-                              >
-                                {query}
+                  {intents.map((intent) => {
+                    const variants = variantsByIntent.get(intent.slug) ?? [];
+
+                    return (
+                      <article
+                        key={intent.slug}
+                        className="rounded-[8px] border border-black/10 bg-white p-5 shadow-sm"
+                      >
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                          <div className="min-w-0 space-y-3">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <strong className="text-2xl">
+                                {intent.intendedService}
+                              </strong>
+                              <span className="rounded-full bg-amber-100 px-2 py-1 text-xs font-bold text-amber-950">
+                                {intent.indexingMode}
                               </span>
-                            ))}
-                            {intent.queries.length > 18 ? (
-                              <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-bold text-emerald-800">
-                                +{intent.queries.length - 18}
+                              <span className="rounded-full bg-zinc-100 px-2 py-1 text-xs font-bold text-zinc-700">
+                                {intent.region}
                               </span>
+                            </div>
+                            <p className="text-base leading-7 text-zinc-700">
+                              {intent.explanation}
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              {variants.slice(0, 18).map((variant) => (
+                                <Link
+                                  key={variant.slug}
+                                  href={variant.canonicalPath}
+                                  className="rounded-full bg-zinc-100 px-2 py-1 text-xs font-bold text-zinc-700 transition hover:bg-emerald-100 hover:text-emerald-900"
+                                >
+                                  {variant.label}
+                                </Link>
+                              ))}
+                              {variants.length > 18 ? (
+                                <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-bold text-emerald-800">
+                                  +{variants.length - 18}
+                                </span>
+                              ) : null}
+                            </div>
+                            {variants.length > 18 ? (
+                              <details className="rounded-[8px] border border-zinc-200 bg-zinc-50 p-3 text-sm">
+                                <summary className="cursor-pointer font-black text-zinc-700">
+                                  랜딩 페이지가 있는 오타 더 보기
+                                </summary>
+                                <div className="mt-3 flex flex-wrap gap-2">
+                                  {variants.slice(18, 72).map((variant) => (
+                                    <Link
+                                      key={variant.slug}
+                                      href={variant.canonicalPath}
+                                      className="rounded-full bg-white px-2 py-1 text-xs font-bold text-zinc-600 transition hover:bg-emerald-100 hover:text-emerald-900"
+                                    >
+                                      {variant.label}
+                                    </Link>
+                                  ))}
+                                </div>
+                              </details>
                             ) : null}
                           </div>
-                          {intent.queries.length > 18 ? (
-                            <details className="rounded-[8px] border border-zinc-200 bg-zinc-50 p-3 text-sm">
-                              <summary className="cursor-pointer font-black text-zinc-700">
-                                주요 오타/검색어 후보 더 보기
-                              </summary>
-                              <div className="mt-3 flex flex-wrap gap-2">
-                                {intent.queries.slice(18, 72).map((query) => (
-                                  <span
-                                    key={query}
-                                    className="rounded-full bg-white px-2 py-1 text-xs font-bold text-zinc-600"
-                                  >
-                                    {query}
-                                  </span>
-                                ))}
-                                {intent.queries.length > 72 ? (
-                                  <span className="rounded-full bg-emerald-100 px-2 py-1 text-xs font-black text-emerald-900">
-                                    추가 후보 {intent.queries.length - 72}개는 각 랜딩 페이지에서 분산 반영
-                                  </span>
-                                ) : null}
-                              </div>
-                            </details>
-                          ) : null}
+                          <Link
+                            href={`/oops/${intent.slug}`}
+                            aria-label={`${intent.intendedService} 대표 페이지`}
+                            className="shrink-0 rounded-full p-2 text-zinc-700 transition hover:bg-zinc-100"
+                          >
+                            <ArrowRight aria-hidden="true" size={22} />
+                          </Link>
                         </div>
-                        <ArrowRight
-                          aria-hidden="true"
-                          className="shrink-0"
-                          size={22}
-                        />
-                      </div>
-                    </Link>
-                  ))}
+                      </article>
+                    );
+                  })}
                 </div>
               </section>
             );
