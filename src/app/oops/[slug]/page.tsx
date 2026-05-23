@@ -13,6 +13,7 @@ import {
   getTodayDelight,
   siteConfig,
 } from "@/lib/site";
+import { getTypoPageCopy, getVariantQueries } from "@/lib/typo-page-copy";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -36,11 +37,10 @@ export async function generateMetadata({
 
   const { intent } = variant;
   const typoLabel = variant.label;
+  const typoCopy = getTypoPageCopy(intent, typoLabel);
+  const metadataQueries = getVariantQueries(intent, typoLabel, 5);
   const title = `${typoLabel} 또 눌렀죠? 힐링 하고 가요.`;
-  const description = `${typoLabel}는 ${intent.intendedService}로 가려다 생길 수 있는 주소창 오타예요. 귀여운 사진 하나 보고, 원래 목적지는 바로 열어보세요. 검색어: ${intent.queries
-    .filter((query) => query !== typoLabel)
-    .slice(0, 5)
-    .join(", ")}`;
+  const description = `${typoCopy.reason} 귀여운 사진 하나 보고, 원래 목적지는 바로 열어보세요. 관련 입력: ${metadataQueries.join(", ")}`;
 
   return {
     title,
@@ -109,14 +109,14 @@ export default async function OopsPage({ params }: PageProps) {
           name: `${typoLabel}는 ${intent.intendedService} 오타예요`,
           url: absoluteUrl(variant.canonicalPath),
           inLanguage: intent.locale,
-          description: `${typoLabel}와 ${intent.intendedService} 관련 주소창 오타를 설명하고, 원래 목적지로 이동할 수 있게 돕는 페이지입니다.`,
+          description: `${getTypoPageCopy(intent, typoLabel).reason} 원래 목적지로 이동할 수 있게 돕는 페이지입니다.`,
           about: {
             "@type": "Thing",
             name: intent.intendedService,
-            alternateName: intent.queries.slice(0, 12),
+            alternateName: getVariantQueries(intent, typoLabel, 12),
             sameAs: intent.destinationUrl,
           },
-          mentions: intent.queries.slice(0, 12).map((query) => ({
+          mentions: getVariantQueries(intent, typoLabel, 12).map((query) => ({
             "@type": "DefinedTerm",
             name: query,
             inDefinedTermSet: absoluteUrl("/dictionary"),

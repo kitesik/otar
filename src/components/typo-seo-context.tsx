@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { TypoIntent } from "@/lib/site";
+import { getTypoPageCopy, getVariantQueries } from "@/lib/typo-page-copy";
 
 type TypoSeoContextProps = {
   intent: TypoIntent;
@@ -15,7 +16,8 @@ export function TypoSeoContext({
   queryLimit = 14,
 }: TypoSeoContextProps) {
   const sectionId = `typo-context-${intent.slug}`;
-  const relatedQueries = intent.queries.filter((query) => query !== typoLabel);
+  const typoCopy = getTypoPageCopy(intent, typoLabel);
+  const relatedQueries = getVariantQueries(intent, typoLabel);
   const visibleQueries = relatedQueries.slice(0, queryLimit);
   const remainingQueries = relatedQueries.slice(queryLimit);
   const related = relatedIntents
@@ -36,8 +38,7 @@ export function TypoSeoContext({
           처럼 입력된 경우를 위한 페이지입니다. {intent.explanation}
         </p>
         <p className="text-zinc-600">
-          원래 목적지는 위 버튼으로 바로 열 수 있고, 이 페이지는 아래의
-          비슷한 오타와 검색어를 같은 의도로 정리해 둡니다.
+          {typoCopy.reason} {typoCopy.reassurance}
         </p>
       </div>
 
