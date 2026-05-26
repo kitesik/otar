@@ -1,10 +1,10 @@
-# 아또오타 Project Handoff
+# chimi Project Handoff
 
-이 문서는 다른 Codex 스레드나 다른 컴퓨터에서 `아또오타` 프로젝트를 바로 이어서 작업하기 위한 운영 메모입니다.
+이 문서는 다른 Codex 스레드나 다른 컴퓨터에서 `chimi` 프로젝트를 바로 이어서 작업하기 위한 운영 메모입니다.
 
 ## Project Identity
 
-- 프로젝트 이름: `아또오타`
+- 프로젝트 이름: `chimi`
 - 공개 도메인: `https://otar.site`
 - 보조 도메인: `https://www.otar.site`
 - GitHub repo: `kitesik/otar`

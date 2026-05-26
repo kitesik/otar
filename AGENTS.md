@@ -6,7 +6,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Project Handoff
 
-This project is called `아또오타`.
+This project is called `chimi`.
 
 Before continuing SEO, deployment, keyword, or content work, read:
 
