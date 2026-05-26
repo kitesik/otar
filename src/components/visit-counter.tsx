@@ -6,6 +6,7 @@ type VisitCounts = {
   today: number;
   total: number;
   configured: boolean;
+  source?: string;
 };
 
 function formatCount(value: number) {
@@ -35,7 +36,15 @@ export function VisitCounter({ slug }: { slug: string }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ slug }),
+        body: JSON.stringify({
+          slug,
+          path: window.location.pathname,
+          referrer: document.referrer,
+          screen: {
+            width: window.innerWidth,
+            height: window.innerHeight,
+          },
+        }),
       });
       const payload = (await response.json()) as VisitCounts;
 

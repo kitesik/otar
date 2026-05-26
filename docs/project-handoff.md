@@ -196,6 +196,34 @@ VISIT_COUNTER_BASE_TOTAL
 - 오늘 숫자는 다른 색상으로 강조한다.
 - 문구: `오타 동료들이 많아요`
 
+## Analytics
+
+2026-05-26부터 아래 조합으로 방문 분석을 수집합니다.
+
+- Vercel Web Analytics: page views, visitors, top pages, referrers, country, browser, OS를 Vercel dashboard에서 확인
+- Search Console: Google 검색 쿼리, 노출, 클릭, CTR, 평균 순위를 확인
+- 자체 `/api/visits` 집계: 기존 방문자 숫자와 함께 `source`, `device`, `country`, `referrer` 카운터를 저장
+
+Vercel Analytics는 `src/app/layout.tsx`의 `<Analytics />`로 주입합니다. 목적지 버튼 클릭은 `src/components/tracked-destination-link.tsx`에서 `destination_click` custom event로 전송합니다. Vercel custom events는 plan 제한이 있을 수 있으므로, 핵심 유입 분석은 Web Analytics와 자체 집계에 의존합니다.
+
+자체 상세 집계 확인:
+
+```text
+https://otar.site/api/visits?details=1
+```
+
+집계되는 source 값:
+
+```text
+direct, internal, google, naver, daum, bing, social, ai, other
+```
+
+중요한 한계:
+
+- Google 검색어는 referrer로 거의 전달되지 않으므로 Search Console에서 봐야 합니다.
+- IP나 개인 식별자는 저장하지 않습니다.
+- Vercel dashboard에서 Analytics 기능이 켜져 있어야 Vercel Web Analytics 화면이 채워집니다.
+
 ## Delight Image Rotation
 
 현재 페이지 사진은 API 크롤링보다 로컬 이미지 기반으로 운용합니다.

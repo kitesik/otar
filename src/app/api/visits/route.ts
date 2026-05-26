@@ -10,7 +10,78 @@ type CountResponse = {
   total: number;
   configured: boolean;
   provider: "redis" | "external" | "fallback";
+  source?: TrafficSource;
+  analytics?: AnalyticsSummary;
 };
+
+type TrafficSource =
+  | "direct"
+  | "internal"
+  | "google"
+  | "naver"
+  | "daum"
+  | "bing"
+  | "social"
+  | "ai"
+  | "other";
+
+type DeviceKind = "desktop" | "mobile" | "tablet" | "bot" | "unknown";
+
+type VisitPayload = {
+  slug?: string;
+  path?: string;
+  referrer?: string;
+  screen?: {
+    width?: number;
+    height?: number;
+  };
+};
+
+type AnalyticsItem = {
+  name: string;
+  today: number;
+  total: number;
+};
+
+type AnalyticsSummary = {
+  sources: AnalyticsItem[];
+  devices: AnalyticsItem[];
+  countries: AnalyticsItem[];
+};
+
+const trackedSources: TrafficSource[] = [
+  "direct",
+  "internal",
+  "google",
+  "naver",
+  "daum",
+  "bing",
+  "social",
+  "ai",
+  "other",
+];
+
+const trackedDevices: DeviceKind[] = [
+  "desktop",
+  "mobile",
+  "tablet",
+  "bot",
+  "unknown",
+];
+
+const trackedCountries = [
+  "KR",
+  "US",
+  "JP",
+  "CN",
+  "SG",
+  "VN",
+  "ID",
+  "TH",
+  "PH",
+  "IN",
+  "UNKNOWN",
+];
 
 function getRedisConfig(): RedisConfig | null {
   const url = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL;
@@ -30,8 +101,10 @@ function getBaseTotal() {
 
 function fallbackCounts({
   counted = false,
+  source,
 }: {
   counted?: boolean;
+  source?: TrafficSource;
 } = {}): CountResponse {
   const baseTotal = getBaseTotal();
 
@@ -40,6 +113,7 @@ function fallbackCounts({
     total: baseTotal + (counted ? 1 : 0),
     configured: false,
     provider: "fallback",
+    source,
   };
 }
 
@@ -109,6 +183,132 @@ function counterKey(...parts: string[]) {
   return encodeURIComponent(`${getExternalCounterNamespace()}:${safeParts}`);
 }
 
+function safeDimension(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/^www\./, "")
+    .replace(/[^a-z0-9._-]/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 80);
+}
+
+function getReferrerHost(referrer?: string) {
+  if (!referrer) {
+    return "direct";
+  }
+
+  try {
+    return safeDimension(new URL(referrer).hostname) || "unknown";
+  } catch {
+    return "unknown";
+  }
+}
+
+function getTrafficSource(referrer?: string): TrafficSource {
+  const host = getReferrerHost(referrer);
+
+  if (host === "direct") {
+    return "direct";
+  }
+
+  if (host === "otar.site" || host.endsWith(".otar.site")) {
+    return "internal";
+  }
+
+  if (host.includes("google.")) {
+    return "google";
+  }
+
+  if (host.includes("naver.")) {
+    return "naver";
+  }
+
+  if (host.includes("daum.") || host.includes("kakao.")) {
+    return "daum";
+  }
+
+  if (host.includes("bing.") || host.includes("microsoft.")) {
+    return "bing";
+  }
+
+  if (
+    host.includes("chatgpt.") ||
+    host.includes("openai.") ||
+    host.includes("perplexity.") ||
+    host.includes("claude.") ||
+    host.includes("gemini.")
+  ) {
+    return "ai";
+  }
+
+  if (
+    host.includes("facebook.") ||
+    host.includes("instagram.") ||
+    host.includes("threads.") ||
+    host.includes("x.com") ||
+    host.includes("twitter.") ||
+    host.includes("reddit.") ||
+    host.includes("linkedin.")
+  ) {
+    return "social";
+  }
+
+  return "other";
+}
+
+function getDeviceKind(userAgent: string | null): DeviceKind {
+  const ua = userAgent?.toLowerCase() ?? "";
+
+  if (!ua) {
+    return "unknown";
+  }
+
+  if (/bot|crawl|spider|slurp|bingpreview|google-inspectiontool/.test(ua)) {
+    return "bot";
+  }
+
+  if (/ipad|tablet/.test(ua)) {
+    return "tablet";
+  }
+
+  if (/mobile|iphone|android/.test(ua)) {
+    return "mobile";
+  }
+
+  return "desktop";
+}
+
+function getCountry(request: Request) {
+  return (
+    request.headers.get("x-vercel-ip-country") ??
+    request.headers.get("cf-ipcountry") ??
+    "UNKNOWN"
+  )
+    .toUpperCase()
+    .replace(/[^A-Z]/g, "")
+    .slice(0, 2) || "UNKNOWN";
+}
+
+function analyticsParts({
+  source,
+  device,
+  country,
+  referrerHost,
+}: {
+  source: TrafficSource;
+  device: DeviceKind;
+  country: string;
+  referrerHost: string;
+}) {
+  return [
+    ["source", source],
+    ["device", device],
+    ["country", country],
+    ["referrer", referrerHost],
+  ];
+}
+
 async function externalCounter(
   command: "get" | "hit",
   ...parts: string[]
@@ -148,12 +348,53 @@ async function getExternalCounts(): Promise<CountResponse> {
   };
 }
 
-async function hitExternalCounts(slug?: string): Promise<CountResponse> {
+async function getExternalDimension(
+  dimension: string,
+  value: string,
+): Promise<AnalyticsItem> {
+  const todayKey = getSeoulDate();
+  const [today, total] = await Promise.all([
+    externalCounter("get", dimension, value, "daily", todayKey),
+    externalCounter("get", dimension, value, "total"),
+  ]);
+
+  return { name: value, today, total };
+}
+
+async function getExternalAnalytics(): Promise<AnalyticsSummary> {
+  const [sources, devices, countries] = await Promise.all([
+    Promise.all(trackedSources.map((source) => getExternalDimension("source", source))),
+    Promise.all(trackedDevices.map((device) => getExternalDimension("device", device))),
+    Promise.all(trackedCountries.map((country) => getExternalDimension("country", country))),
+  ]);
+
+  return { sources, devices, countries };
+}
+
+async function hitExternalCounts({
+  slug,
+  source,
+  device,
+  country,
+  referrerHost,
+}: {
+  slug?: string;
+  source: TrafficSource;
+  device: DeviceKind;
+  country: string;
+  referrerHost: string;
+}): Promise<CountResponse> {
   const baseTotal = getBaseTotal();
   const todayKey = getSeoulDate();
   const commands = [
     externalCounter("hit", "daily", todayKey),
     externalCounter("hit", "total"),
+    ...analyticsParts({ source, device, country, referrerHost }).flatMap(
+      ([dimension, value]) => [
+        externalCounter("hit", dimension, value, "daily", todayKey),
+        externalCounter("hit", dimension, value, "total"),
+      ],
+    ),
   ];
 
   if (slug) {
@@ -170,6 +411,7 @@ async function hitExternalCounts(slug?: string): Promise<CountResponse> {
     total: total + baseTotal,
     configured: true,
     provider: "external",
+    source,
   };
 }
 
@@ -204,9 +446,62 @@ async function getCounts(): Promise<CountResponse> {
   };
 }
 
-export async function GET() {
+async function getRedisDimension(
+  config: RedisConfig,
+  dimension: string,
+  value: string,
+): Promise<AnalyticsItem> {
+  const todayKey = `chimi:visits:${dimension}:${value}:daily:${getSeoulDate()}`;
+  const totalKey = `chimi:visits:${dimension}:${value}:total`;
+  const [today, total] = await Promise.all([
+    redisCommand<string | number>(config, "get", todayKey),
+    redisCommand<string | number>(config, "get", totalKey),
+  ]);
+
+  return {
+    name: value,
+    today: Number(today ?? 0),
+    total: Number(total ?? 0),
+  };
+}
+
+async function getRedisAnalytics(config: RedisConfig): Promise<AnalyticsSummary> {
+  const [sources, devices, countries] = await Promise.all([
+    Promise.all(trackedSources.map((source) => getRedisDimension(config, "source", source))),
+    Promise.all(trackedDevices.map((device) => getRedisDimension(config, "device", device))),
+    Promise.all(trackedCountries.map((country) => getRedisDimension(config, "country", country))),
+  ]);
+
+  return { sources, devices, countries };
+}
+
+async function getAnalytics(): Promise<AnalyticsSummary | undefined> {
+  const config = getRedisConfig();
+
+  if (config) {
+    return getRedisAnalytics(config);
+  }
+
+  if (isExternalCounterEnabled()) {
+    return getExternalAnalytics();
+  }
+
+  return undefined;
+}
+
+export async function GET(request: Request) {
   try {
-    return NextResponse.json(await getCounts());
+    const url = new URL(request.url);
+    const counts = await getCounts();
+
+    if (url.searchParams.get("details") === "1") {
+      return NextResponse.json({
+        ...counts,
+        analytics: await getAnalytics(),
+      });
+    }
+
+    return NextResponse.json(counts);
   } catch {
     return NextResponse.json<CountResponse>({
       today: 0,
@@ -219,19 +514,35 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const config = getRedisConfig();
-  const body = (await request.json().catch(() => ({}))) as { slug?: string };
+  const body = (await request.json().catch(() => ({}))) as VisitPayload;
   const slug = body.slug?.replace(/[^a-z0-9-]/gi, "").slice(0, 80);
+  const source = getTrafficSource(body.referrer);
+  const device = getDeviceKind(request.headers.get("user-agent"));
+  const country = getCountry(request);
+  const referrerHost = getReferrerHost(body.referrer);
 
   if (!config) {
     if (isExternalCounterEnabled()) {
       try {
-        return NextResponse.json<CountResponse>(await hitExternalCounts(slug));
+        return NextResponse.json<CountResponse>(
+          await hitExternalCounts({
+            slug,
+            source,
+            device,
+            country,
+            referrerHost,
+          }),
+        );
       } catch {
-        return NextResponse.json<CountResponse>(fallbackCounts({ counted: true }));
+        return NextResponse.json<CountResponse>(
+          fallbackCounts({ counted: true, source }),
+        );
       }
     }
 
-    return NextResponse.json<CountResponse>(fallbackCounts({ counted: true }));
+    return NextResponse.json<CountResponse>(
+      fallbackCounts({ counted: true, source }),
+    );
   }
 
   try {
@@ -249,6 +560,26 @@ export async function POST(request: Request) {
       );
     }
 
+    for (const [dimension, value] of analyticsParts({
+      source,
+      device,
+      country,
+      referrerHost,
+    })) {
+      commands.push(
+        redisCommand<number>(
+          config,
+          "incr",
+          `chimi:visits:${dimension}:${value}:daily:${getSeoulDate()}`,
+        ),
+        redisCommand<number>(
+          config,
+          "incr",
+          `chimi:visits:${dimension}:${value}:total`,
+        ),
+      );
+    }
+
     const [today, total] = await Promise.all(commands);
 
     return NextResponse.json<CountResponse>({
@@ -256,8 +587,9 @@ export async function POST(request: Request) {
       total: Number(total ?? 0) + getBaseTotal(),
       configured: true,
       provider: "redis",
+      source,
     });
   } catch {
-    return NextResponse.json(fallbackCounts({ counted: true }));
+    return NextResponse.json(fallbackCounts({ counted: true, source }));
   }
 }

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ExternalLink } from "lucide-react";
 import { JsonLd } from "@/components/json-ld";
 import { LiveDelightCard } from "@/components/live-delight-card";
+import { TrackedDestinationLink } from "@/components/tracked-destination-link";
 import { TypoSeoContext } from "@/components/typo-seo-context";
 import { VisitCounter } from "@/components/visit-counter";
 import { getHourlyDelight } from "@/lib/delight-rotation";
@@ -200,15 +201,15 @@ export default async function OopsPage({ params }: PageProps) {
 
         <LiveDelightCard fallback={today} />
 
-        <a
+        <TrackedDestinationLink
           href={intent.destinationUrl}
-          target="_blank"
-          rel="noreferrer"
+          service={intent.intendedService}
+          slug={variant.slug}
           className="font-soft mt-7 inline-flex min-h-12 w-full max-w-sm items-center justify-center gap-2 rounded-[8px] bg-zinc-950 px-5 py-3 text-base font-black text-white transition hover:bg-zinc-800"
         >
           {intent.intendedService} 바로 열기
           <ExternalLink aria-hidden="true" size={18} />
-        </a>
+        </TrackedDestinationLink>
 
         <VisitCounter slug={variant.slug} />
 
