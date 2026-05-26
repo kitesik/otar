@@ -5,8 +5,10 @@ import { JsonLd } from "@/components/json-ld";
 import { LiveDelightCard } from "@/components/live-delight-card";
 import { TypoSeoContext } from "@/components/typo-seo-context";
 import { VisitCounter } from "@/components/visit-counter";
+import { getHourlyDelight } from "@/lib/delight-rotation";
 import {
   absoluteUrl,
+  type DelightItem,
   getIntentsByCategory,
   getLandingVariantBySlug,
   getLandingVariants,
@@ -20,6 +22,25 @@ type PageProps = {
 };
 
 export const dynamicParams = false;
+
+function getSearchPreviewDelight(): DelightItem {
+  const active = getHourlyDelight()?.active;
+
+  if (!active) {
+    return getTodayDelight();
+  }
+
+  return {
+    date: active.id,
+    title: active.title,
+    caption: active.caption,
+    image: active.image,
+    imageAlt: active.imageAlt,
+    sourceUrl: active.sourceUrl,
+    sourceLicense: active.sourceLicense,
+    tags: [active.source],
+  };
+}
 
 export function generateStaticParams() {
   return getLandingVariants().map((variant) => ({ slug: variant.slug }));
@@ -39,11 +60,15 @@ export async function generateMetadata({
   const typoLabel = variant.label;
   const typoCopy = getTypoPageCopy(intent, typoLabel);
   const metadataQueries = getVariantQueries(intent, typoLabel, 5);
-  const title = `${typoLabel} 또 눌렀죠? 힐링 하고 가요.`;
+  const previewDelight = getSearchPreviewDelight();
+  const previewImageUrl = absoluteUrl(previewDelight.image);
+  const title = `${typoLabel} 아 또 오타났네`;
   const description = `${typoCopy.reason} 귀여운 사진 하나 보고, 원래 목적지는 바로 열어보세요. 관련 입력: ${metadataQueries.join(", ")}`;
 
   return {
-    title,
+    title: {
+      absolute: title,
+    },
     description,
     alternates: {
       canonical: variant.canonicalPath,
@@ -69,10 +94,8 @@ export async function generateMetadata({
       url: absoluteUrl(variant.canonicalPath),
       images: [
         {
-          url: "/opengraph-image",
-          width: 1200,
-          height: 630,
-          alt: `${typoLabel} 오타 힐링 사진 미리보기`,
+          url: previewImageUrl,
+          alt: previewDelight.imageAlt,
         },
       ],
       locale: "ko_KR",
@@ -82,7 +105,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title,
       description,
-      images: ["/opengraph-image"],
+      images: [previewImageUrl],
     },
   };
 }
@@ -96,7 +119,8 @@ export default async function OopsPage({ params }: PageProps) {
   }
 
   const { intent } = variant;
-  const today = getTodayDelight();
+  const today = getSearchPreviewDelight();
+  const previewImageUrl = absoluteUrl(today.image);
   const typoLabel = variant.label;
   const relatedIntents = getIntentsByCategory(intent.category);
 
@@ -123,9 +147,8 @@ export default async function OopsPage({ params }: PageProps) {
           })),
           primaryImageOfPage: {
             "@type": "ImageObject",
-            url: absoluteUrl("/opengraph-image"),
-            width: 1200,
-            height: 630,
+            url: previewImageUrl,
+            caption: today.caption,
           },
           potentialAction: {
             "@type": "ViewAction",
